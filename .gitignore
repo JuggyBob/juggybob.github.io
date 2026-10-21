@@ -1,0 +1,25 @@
+# Git / GitHub Pages
+dist/
+.astro/
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Environment
+.env
+.env.production
+.env.*.local
+
+# OS
+ehthumbs.db
+desktop.ini

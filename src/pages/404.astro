@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import { projects } from '../data/projects';
+---
+
+<BaseLayout
+  title="Page not found — JuggyBob"
+  description="That page does not exist. Here are the four applications instead."
+  noindex
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <Header />
+  <main id="main" class="notfound">
+    <div class="wrap">
+      <p class="eyebrow">404</p>
+      <h1 class="notfound__title">That page is not here.</h1>
+      <p class="lede">
+        The link may be old, or the page may have moved. Everything the site contains is
+        listed below.
+      </p>
+      <ul class="notfound__list">
+        {
+          projects.map((project) => (
+            <li style={`--accent:${project.accent}`}>
+              <a href={`/apps/${project.slug}/`}>
+                <img src={project.icon} alt="" width="40" height="40" loading="lazy" decoding="async" />
+                <span>
+                  <span class="notfound__name">{project.name}</span>
+                  <span class="notfound__tag">{project.tagline}</span>
+                </span>
+                <Icon name="arrow-right" size={15} />
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href="/">
+            <span class="notfound__glyph" aria-hidden="true">
+              <Icon name="chevron-left" size={16} />
+            </span>
+            <span>
+              <span class="notfound__name">Back to the homepage</span>
+              <span class="notfound__tag">All four applications and the gallery</span>
+            </span>
+            <Icon name="arrow-right" size={15} />
+          </a>
+        </li>
+      </ul>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: clamp(4rem, 10vw, 8rem);
+    min-height: 60vh;
+  }
+  .notfound__title {
+    margin-top: 1rem;
+  }
+  .notfound :global(.lede) {
+    margin-top: 1.2rem;
+  }
+  .notfound__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.7rem;
+    margin-top: 2.5rem;
+    max-width: 60rem;
+  }
+  .notfound__list a {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    transition:
+      border-color 0.25s var(--ease),
+      transform 0.3s var(--ease-out);
+  }
+  .notfound__list a:hover {
+    border-color: color-mix(in srgb, var(--accent, var(--brand)) 40%, var(--line));
+    transform: translateY(-2px);
+  }
+  .notfound__list img {
+    width: 2.2rem;
+    height: 2.2rem;
+    object-fit: contain;
+    flex: none;
+  }
+  .notfound__glyph {
+    width: 2.2rem;
+    height: 2.2rem;
+    display: grid;
+    place-items: center;
+    flex: none;
+    border-radius: 12px;
+    background: var(--surface-2);
+    color: var(--text-3);
+  }
+  .notfound__name {
+    display: block;
+    font-weight: 560;
+    font-size: 0.98rem;
+  }
+  .notfound__tag {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-3);
+    margin-top: 0.1rem;
+  }
+  .notfound__list svg:last-child {
+    margin-left: auto;
+    color: var(--text-3);
+    flex: none;
+  }
+</style>

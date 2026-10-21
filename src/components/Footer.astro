@@ -1,0 +1,170 @@
+---
+import Icon from './Icon.astro';
+import { projects } from '../data/projects';
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap wrap-wide">
+    <div class="site-footer__top">
+      <div class="site-footer__lead">
+        <a class="brand" href="/" aria-label="JuggyBob — home">
+          <span class="brand__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="30" height="30" fill="none">
+              <rect x="1" y="1" width="30" height="30" rx="9" class="brand__plate" />
+              <path
+                d="M6 16h4l2.2-5.4L15.4 22l2.6-12 2.3 6h5.7"
+                class="brand__pulse"
+                stroke-width="2.1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+          <span class="brand__text">JuggyBob</span>
+        </a>
+        <p class="site-footer__blurb">
+          Four independent applications for Android and Windows, built and shipped by one
+          developer. Every one of them works offline, asks for no account, and carries no
+          trackers.
+        </p>
+        <a class="btn btn--ghost btn--sm" href={site.github}>
+          <Icon name="github" size={15} />
+          <span>GitHub profile</span>
+        </a>
+      </div>
+
+      <nav class="site-footer__cols" aria-label="Footer">
+        <div class="site-footer__col">
+          <h2 class="site-footer__title">Applications</h2>
+          <ul>
+            {
+              projects.map((project) => (
+                <li>
+                  <a href={`/apps/${project.slug}/`}>{project.name}</a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h2 class="site-footer__title">Source code</h2>
+          <ul>
+            {
+              projects.map((project) => (
+                <li>
+                  <a href={project.repo} rel="noopener noreferrer" target="_blank">
+                    {project.name} on GitHub
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h2 class="site-footer__title">Downloads</h2>
+          <ul>
+            {
+              projects.map((project) => (
+                <li>
+                  <a href={project.releases} rel="noopener noreferrer" target="_blank">
+                    {project.name} releases
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p class="mono">
+        © {year} JuggyBob. All product names and screenshots belong to their respective
+        projects.
+      </p>
+      <p class="mono">
+        Built as a static site. No analytics, no cookies, no third-party requests.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--bg-2);
+    padding-block: clamp(3rem, 6vw, 5rem) 2rem;
+    margin-top: clamp(3rem, 7vw, 6rem);
+  }
+  .site-footer__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .site-footer__lead {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .site-footer__blurb {
+    color: var(--text-2);
+    font-size: 0.94rem;
+    max-width: 42ch;
+  }
+  .site-footer__cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+  }
+  .site-footer__title {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 0.9rem;
+  }
+  .site-footer__col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .site-footer__col a {
+    font-size: 0.9rem;
+    color: var(--text-2);
+    transition: color 0.2s var(--ease);
+  }
+  .site-footer__col a:hover {
+    color: var(--text);
+  }
+  .site-footer__bottom {
+    border-top: 1px solid var(--line);
+    padding-top: 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    justify-content: space-between;
+  }
+  .site-footer__bottom p {
+    font-size: 0.72rem;
+    color: var(--text-3);
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 860px) {
+    .site-footer__top {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .site-footer__cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

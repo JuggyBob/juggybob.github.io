@@ -1,0 +1,22 @@
+{
+  "name": "juggybob-website",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio and product site for JuggyBob's independent software projects.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.6.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/sitemap": "^3.4.1",
+    "typescript": "^5.8.3"
+  }
+}

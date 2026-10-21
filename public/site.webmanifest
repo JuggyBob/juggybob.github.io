@@ -1,0 +1,17 @@
+{
+  "name": "JuggyBob",
+  "short_name": "JuggyBob",
+  "description": "Four independent applications for Android and Windows, built by JuggyBob.",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "background_color": "#08090b",
+  "theme_color": "#08090b",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+---
+import ProductLayout from '../../layouts/ProductLayout.astro';
+import { bySlug } from '../../data/projects';
+
+const project = bySlug('calcsuite');
+---
+
+<ProductLayout
+  project={project}
+  hero={{
+    src: '/img/calcsuite/keypad.webp',
+    alt: 'The Calculator Suite home screen with the everyday keypad, the search field and the tool categories.',
+    caption: 'Calculator Suite 3.0.1 — 66 tools, offline',
+  }}
+  heroFrame="phone"
+/>

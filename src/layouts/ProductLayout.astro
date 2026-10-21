@@ -1,0 +1,863 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import PhoneFrame from '../components/PhoneFrame.astro';
+import WindowFrame from '../components/WindowFrame.astro';
+import Gallery from '../components/Gallery.astro';
+import type { Project } from '../data/projects';
+import { nextProject, prevProject } from '../data/projects';
+import { site } from '../data/site';
+
+export interface Props {
+  project: Project;
+  /** The artwork that anchors the hero. */
+  hero: { src: string; alt: string; caption: string };
+  heroFrame?: 'phone' | 'window';
+}
+
+const { project, hero, heroFrame = 'phone' } = Astro.props;
+const next = nextProject(project.slug);
+const prev = prevProject(project.slug);
+const accent = project.accent;
+
+const meta = [
+  { label: 'Platform', value: project.facts[0].value },
+  {
+    label: 'Release',
+    value: project.pending ? `v${project.version} · rolling out` : `v${project.version}`,
+  },
+  { label: 'Licence', value: project.license },
+  { label: 'Size', value: project.size },
+];
+
+const downloadLabel = project.pending
+  ? 'Get the latest release'
+  : `Download v${project.version}`;
+---
+
+<BaseLayout
+  title={`${project.name} — ${project.tagline}`}
+  description={project.summary}
+  accent={accent}
+  image={project.icon}
+>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <Header />
+
+  <main id="main" class="product" style={`--accent:${accent};--accent-ink:${project.accentInk}`}>
+    <!-- ========================================================== hero -->
+    <section class="phero">
+      <div class="phero__wash" aria-hidden="true"></div>
+      <div class="wrap wrap-wide">
+        <a class="phero__back" href="/#apps">
+          <Icon name="chevron-left" size={14} />
+          <span>All apps</span>
+        </a>
+
+        <div class="phero__inner">
+          <div class="phero__copy">
+            <div class="phero__ident">
+              <span class="phero__icon">
+                <img src={project.icon} alt="" width="64" height="64" loading="eager" decoding="async" />
+              </span>
+              <div>
+                <h1 class="phero__name">{project.name}</h1>
+                <p class="phero__tagline">{project.tagline}</p>
+              </div>
+            </div>
+
+            <p class="lede phero__summary">{project.summary}</p>
+
+            <div class="phero__actions">
+              <a class="btn btn--accent" href={project.releases} target="_blank" rel="noopener noreferrer">
+                <Icon name="download" size={15} />
+                <span>{downloadLabel}</span>
+              </a>
+              <a class="btn btn--ghost" href={project.repo} target="_blank" rel="noopener noreferrer">
+                <Icon name="github" size={15} />
+                <span>Source code</span>
+              </a>
+            </div>
+
+            <dl class="phero__meta">
+              {
+                meta.map((item) => (
+                  <div>
+                    <dt class="mono">{item.label}</dt>
+                    <dd>{item.value}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </div>
+
+          <div class="phero__stage">
+            {
+              heroFrame === 'window' ? (
+                <div class="phero__slot">
+                  <WindowFrame
+                    src={hero.src}
+                    alt={hero.alt}
+                    title={`${project.name} — ${project.version}`}
+                  />
+                </div>
+              ) : (
+                <div class="phero__slot phero__slot--phone">
+                  <PhoneFrame
+                    src={hero.src}
+                    alt={hero.alt}
+                    loading="eager"
+                    sizes="(max-width: 900px) 62vw, 290px"
+                  />
+                </div>
+              )
+            }
+            <p class="phero__caption mono">{hero.caption}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== problem -->
+    <section class="section problem">
+      <div class="wrap wrap-wide">
+        <div class="problem__lead" data-reveal>
+          <p class="eyebrow">Why it exists</p>
+          <h2>{project.problem.heading}</h2>
+        </div>
+        <div class="problem__body">
+          <p data-reveal style="--reveal-delay:60ms">{project.problem.body}</p>
+          <ul class="problem__audience" data-reveal style="--reveal-delay:120ms">
+            {
+              project.problem.audience.map((item) => (
+                <li>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================= features -->
+    <section class="section features">
+      <div class="wrap wrap-wide">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow" data-reveal>What it does</p>
+            <h2 data-reveal style="--reveal-delay:60ms">
+              The parts that actually matter.
+            </h2>
+          </div>
+          <p class="section__note" data-reveal style="--reveal-delay:120ms">
+            Every screen below is the released application. The numbers, the tools and the
+            behaviour described are the ones you will find in the build.
+          </p>
+        </div>
+
+        {
+          project.features.map((feature, index) => {
+            const side = feature.side ?? (index % 2 === 0 ? 'right' : 'left');
+            const frame = feature.frame ?? 'phone';
+            return (
+              <article class={`fblock fblock--${side}`} data-reveal>
+                <div class="fblock__copy">
+                  <p class="fblock__index mono">
+                    {String(index + 1).padStart(2, '0')} — {feature.label}
+                  </p>
+                  <h3>{feature.title}</h3>
+                  <p class="fblock__body">{feature.body}</p>
+                  {feature.points && (
+                    <ul class="fblock__points">
+                      {feature.points.map((point) => (
+                        <li>
+                          <Icon name="check" size={13} />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div class="fblock__art">
+                  {feature.shot && frame === 'window' ? (
+                    <div class="fblock__slot">
+                      <WindowFrame
+                        src={feature.shot}
+                        alt={feature.shotAlt ?? ''}
+                        title={`${project.name} — ${feature.label}`}
+                      />
+                    </div>
+                  ) : feature.shot ? (
+                    <div class="fblock__slot fblock__slot--phone">
+                      <PhoneFrame
+                        src={feature.shot}
+                        alt={feature.shotAlt ?? ''}
+                        sizes="(max-width: 900px) 62vw, 258px"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
+    </section>
+
+    <!-- ======================================================= workflow -->
+    <section class="section workflow">
+      <div class="wrap wrap-wide">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow" data-reveal>How it is used</p>
+            <h2 data-reveal style="--reveal-delay:60ms">A short path from open to done.</h2>
+          </div>
+        </div>
+        <ol class="steps">
+          {
+            project.workflow.map((step, index) => (
+              <li class="steps__item" data-reveal style={`--reveal-delay:${index * 80}ms`}>
+                <span class="steps__num mono">{String(index + 1).padStart(2, '0')}</span>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- ======================================================== gallery -->
+    <section class="section gallery-section">
+      <div class="wrap wrap-wide">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow" data-reveal>Screens</p>
+            <h2 data-reveal style="--reveal-delay:60ms">Every screen, unretouched.</h2>
+          </div>
+          <p class="section__note" data-reveal style="--reveal-delay:120ms">
+            Open any image to see it full size. Use the arrow keys to move between them and
+            Escape to close.
+          </p>
+        </div>
+        <Gallery shots={project.gallery} id={`${project.slug}-gallery`} accent={accent} />
+      </div>
+    </section>
+
+    <!-- ========================================================== facts -->
+    <section class="section facts">
+      <div class="wrap wrap-wide facts__inner">
+        <div class="facts__block" data-reveal>
+          <p class="eyebrow">At a glance</p>
+          <h2>The details, up front.</h2>
+          <dl class="facts__list">
+            {
+              project.facts.map((fact) => (
+                <div>
+                  <dt class="mono">{fact.label}</dt>
+                  <dd>{fact.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+          <div class="facts__stack">
+            <p class="mono facts__stack-label">Built with</p>
+            <ul>
+              {
+                project.stack.map((item) => (
+                  <li class="chip">{item}</li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+
+        <div class="facts__block" data-reveal style="--reveal-delay:100ms">
+          <p class="eyebrow">Privacy &amp; offline</p>
+          <h2>What leaves your device.</h2>
+          <p class="facts__note">
+            Nothing here is a marketing promise — it is what the application is built to do.
+          </p>
+          <ul class="facts__privacy">
+            {
+              project.privacy.map((item) => (
+                <li>
+                  <Icon name="check" size={13} />
+                  <span>{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <a class="link-arrow" href={project.repo} target="_blank" rel="noopener noreferrer">
+            <span>Read the source and the licence</span>
+            <Icon name="arrow-up-right" size={14} />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= cta -->
+    <section class="cta">
+      <div class="wrap wrap-wide cta__inner">
+        <div>
+          <p class="eyebrow">Get {project.name}</p>
+          <h2 class="cta__title">Try it on your own device.</h2>
+          <p class="cta__note">
+            The latest build is published on GitHub Releases with a checksum file next to it.
+            The source is public, and the whole thing is free of accounts, adverts and
+            trackers.
+          </p>
+        </div>
+        <div class="cta__actions">
+          <a class="btn btn--accent" href={project.releases} target="_blank" rel="noopener noreferrer">
+            <Icon name="download" size={15} />
+            <span>{downloadLabel}</span>
+          </a>
+          <a class="btn btn--ghost" href={project.repo} target="_blank" rel="noopener noreferrer">
+            <Icon name="github" size={15} />
+            <span>Source code</span>
+          </a>
+          <a class="btn btn--ghost" href={`${site.github}?tab=repositories`} target="_blank" rel="noopener noreferrer">
+            <span>All repositories</span>
+            <Icon name="arrow-up-right" size={15} />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================== next / prev -->
+    <nav class="pager" aria-label="Other projects">
+      <a class="pager__link" href={`/apps/${prev.slug}/`}>
+        <span class="pager__label mono">
+          <Icon name="chevron-left" size={13} />
+          Previous
+        </span>
+        <span class="pager__name">{prev.name}</span>
+        <span class="pager__tag">{prev.tagline}</span>
+      </a>
+      <a class="pager__link pager__link--next" href={`/apps/${next.slug}/`}>
+        <span class="pager__label mono">
+          Next
+          <Icon name="chevron-right" size={13} />
+        </span>
+        <span class="pager__name">{next.name}</span>
+        <span class="pager__tag">{next.tagline}</span>
+      </a>
+    </nav>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  const revealables = document.querySelectorAll<HTMLElement>('[data-reveal]');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.setAttribute('data-reveal', 'in');
+          observer.unobserve(entry.target);
+        });
+      },
+      { rootMargin: '0px 0px -6% 0px', threshold: 0.06 }
+    );
+    revealables.forEach((element) => observer.observe(element));
+  } else {
+    revealables.forEach((element) => element.setAttribute('data-reveal', 'in'));
+  }
+</script>
+
+<style>
+  .product {
+    --accent-ink: #04140a;
+  }
+
+  /* ----------------------------------------------------------- hero */
+  .phero {
+    position: relative;
+    padding-block: 1.5rem clamp(3rem, 7vw, 5.5rem);
+    overflow: hidden;
+  }
+  .phero__wash {
+    position: absolute;
+    inset: -40% -20% auto -20%;
+    height: 150%;
+    background: radial-gradient(
+      55% 45% at 62% 22%,
+      color-mix(in srgb, var(--accent) 16%, transparent) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+  .phero__back {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    transition: color 0.2s var(--ease);
+  }
+  .phero__back:hover {
+    color: var(--text);
+  }
+  .phero__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .phero__ident {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .phero__icon {
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface-2));
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+  .phero__icon img {
+    width: 2.2rem;
+    height: 2.2rem;
+    object-fit: contain;
+  }
+  .phero__name {
+    font-size: clamp(2.1rem, 4vw, 3.1rem);
+    letter-spacing: -0.032em;
+  }
+  .phero__tagline {
+    color: var(--text-2);
+    font-size: 0.98rem;
+    margin-top: 0.25rem;
+  }
+  .phero__summary {
+    margin-top: 1.5rem;
+    max-width: 56ch;
+  }
+  .phero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 1.8rem;
+  }
+  .phero__meta {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, auto));
+    gap: clamp(0.9rem, 2.5vw, 2rem);
+    margin-top: 2.2rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line);
+  }
+  .phero__meta dt {
+    font-size: 0.63rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .phero__meta dd {
+    margin: 0.3rem 0 0;
+    font-size: 0.86rem;
+    font-weight: 540;
+  }
+  .phero__stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .phero__slot {
+    width: 100%;
+  }
+  .phero__slot--phone {
+    width: 288px;
+  }
+  .phero__caption {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    text-align: center;
+  }
+
+  /* -------------------------------------------------------- problem */
+  .problem {
+    border-top: 1px solid var(--line);
+  }
+  .problem :global(.wrap) {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: clamp(1.6rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+  .problem__lead h2 {
+    margin-top: 0.9rem;
+    font-size: clamp(1.6rem, 2.7vw, 2.35rem);
+    max-width: 20ch;
+  }
+  .problem__body > p {
+    color: var(--text-2);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  .problem__audience {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .problem__audience li {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+  }
+  .problem__audience h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+  }
+  .problem__audience p {
+    font-size: 0.85rem;
+    color: var(--text-2);
+    line-height: 1.55;
+  }
+
+  /* -------------------------------------------------------- features */
+  .features {
+    background: var(--bg-2);
+    border-block: 1px solid var(--line);
+  }
+  .section__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+    gap: clamp(1rem, 4vw, 3rem);
+    align-items: end;
+    margin-bottom: clamp(2rem, 4vw, 3.2rem);
+  }
+  .section__head h2 {
+    margin-top: 0.9rem;
+    max-width: 18ch;
+  }
+  .section__note {
+    color: var(--text-2);
+    font-size: 0.95rem;
+    max-width: 48ch;
+  }
+  .fblock {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: clamp(1.6rem, 4vw, 3.5rem);
+    align-items: center;
+    padding-block: clamp(1.8rem, 4vw, 3rem);
+  }
+  .fblock + .fblock {
+    border-top: 1px solid var(--line);
+  }
+  .fblock--left .fblock__copy {
+    order: 2;
+  }
+  .fblock--left .fblock__art {
+    order: 1;
+  }
+  .fblock__index {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .fblock__copy h3 {
+    margin-top: 0.7rem;
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+    max-width: 24ch;
+  }
+  .fblock__body {
+    margin-top: 0.9rem;
+    color: var(--text-2);
+    font-size: 0.96rem;
+    line-height: 1.68;
+    max-width: 56ch;
+  }
+  .fblock__points {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+  }
+  .fblock__points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    font-size: 0.88rem;
+    color: var(--text-2);
+  }
+  .fblock__points svg {
+    flex: none;
+    margin-top: 0.3em;
+    color: var(--accent);
+  }
+  .fblock__art {
+    display: flex;
+    justify-content: center;
+  }
+  .fblock__slot {
+    width: 100%;
+  }
+  .fblock__slot--phone {
+    width: 258px;
+  }
+  .fblock--left .fblock__slot--phone {
+    transform: rotate(-2deg);
+  }
+  .fblock--right .fblock__slot--phone {
+    transform: rotate(2deg);
+  }
+
+  /* -------------------------------------------------------- workflow */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.6rem);
+    counter-reset: step;
+  }
+  .steps__item {
+    position: relative;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line-2);
+  }
+  .steps__num {
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+  }
+  .steps__item h3 {
+    margin-top: 0.6rem;
+    font-size: 1.05rem;
+  }
+  .steps__item p {
+    margin-top: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+
+  /* -------------------------------------------------------- gallery */
+  .gallery-section {
+    border-top: 1px solid var(--line);
+  }
+
+  /* ---------------------------------------------------------- facts */
+  .facts {
+    background: var(--bg-2);
+    border-top: 1px solid var(--line);
+  }
+  .facts__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1.8rem, 5vw, 4rem);
+  }
+  .facts__block h2 {
+    margin-top: 0.9rem;
+    font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+  }
+  .facts__list {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .facts__list > div {
+    display: grid;
+    grid-template-columns: minmax(0, 0.45fr) minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .facts__list dt {
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding-top: 0.15rem;
+  }
+  .facts__list dd {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  .facts__stack {
+    margin-top: 1.6rem;
+  }
+  .facts__stack-label {
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 0.7rem;
+  }
+  .facts__stack ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .facts__note {
+    margin-top: 1rem;
+    color: var(--text-2);
+    font-size: 0.94rem;
+  }
+  .facts__privacy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 1.4rem;
+    margin-bottom: 1.6rem;
+  }
+  .facts__privacy li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.92rem;
+    color: var(--text-2);
+  }
+  .facts__privacy svg {
+    flex: none;
+    margin-top: 0.3em;
+    color: var(--accent);
+  }
+
+  /* ------------------------------------------------------------ cta */
+  .cta {
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+    border-top: 1px solid var(--line);
+    background:
+      radial-gradient(
+        70% 130% at 15% 0%,
+        color-mix(in srgb, var(--accent) 13%, transparent) 0%,
+        transparent 60%
+      ),
+      var(--bg);
+  }
+  .cta__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+  .cta__title {
+    margin-top: 0.9rem;
+    font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+  }
+  .cta__note {
+    margin-top: 0.9rem;
+    color: var(--text-2);
+    max-width: 56ch;
+    font-size: 0.96rem;
+  }
+  .cta__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 15rem;
+  }
+
+  /* ---------------------------------------------------------- pager */
+  .pager {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+  .pager__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: clamp(1.4rem, 3vw, 2.2rem) var(--gutter);
+    transition: background-color 0.25s var(--ease);
+  }
+  .pager__link:hover {
+    background: var(--surface);
+  }
+  .pager__link--next {
+    align-items: flex-end;
+    text-align: right;
+    border-left: 1px solid var(--line);
+  }
+  .pager__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .pager__name {
+    font-size: 1.25rem;
+    font-weight: 620;
+    letter-spacing: -0.02em;
+  }
+  .pager__tag {
+    font-size: 0.85rem;
+    color: var(--text-3);
+  }
+
+  /* ------------------------------------------------------ responsive */
+  @media (max-width: 980px) {
+    .phero__inner,
+    .problem :global(.wrap),
+    .fblock,
+    .facts__inner,
+    .cta__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .fblock--left .fblock__copy {
+      order: 1;
+    }
+    .fblock--left .fblock__art {
+      order: 2;
+    }
+    .phero__stage {
+      order: -1;
+    }
+    .problem__audience,
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .cta__actions {
+      min-width: 0;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+  @media (max-width: 620px) {
+    .phero__meta {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .problem__audience,
+    .steps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .section__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .pager {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .pager__link--next {
+      border-left: 0;
+      border-top: 1px solid var(--line);
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+</style>

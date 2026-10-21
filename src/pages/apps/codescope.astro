@@ -1,0 +1,16 @@
+---
+import ProductLayout from '../../layouts/ProductLayout.astro';
+import { bySlug } from '../../data/projects';
+
+const project = bySlug('codescope');
+---
+
+<ProductLayout
+  project={project}
+  hero={{
+    src: '/img/codescope/report.webp',
+    alt: 'The CodeScope in-app report dashboard on Windows, showing the overview metric cards and the language breakdown table.',
+    caption: 'CodeScope 1.0.0 — in-app report',
+  }}
+  heroFrame="window"
+/>

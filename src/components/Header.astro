@@ -1,0 +1,276 @@
+---
+import Icon from './Icon.astro';
+import { navLinks, site } from '../data/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => href.startsWith('/#') ? false : path.startsWith(href);
+---
+
+<header class="site-header" data-header>
+  <div class="wrap wrap-wide site-header__inner">
+    <a class="brand" href="/" aria-label="JuggyBob — home">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="30" height="30" fill="none">
+          <rect x="1" y="1" width="30" height="30" rx="9" class="brand__plate" />
+          <path
+            d="M6 16h4l2.2-5.4L15.4 22l2.6-12 2.3 6h5.7"
+            class="brand__pulse"
+            stroke-width="2.1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <span class="brand__text">JuggyBob</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        {
+          navLinks.map((link) => (
+            <li>
+              <a href={link.href} class:list={['site-nav__link', { 'is-active': isActive(link.href) }]}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={`${site.github}?tab=repositories`} class="site-nav__link site-nav__link--ext">
+            <Icon name="github" size={15} />
+            <span>GitHub</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <button class="icon-btn" data-theme-toggle type="button" aria-label="Switch colour theme">
+        <span class="icon-btn__sun"><Icon name="sun" size={17} /></span>
+        <span class="icon-btn__moon"><Icon name="moon" size={17} /></span>
+      </button>
+      <button
+        class="icon-btn site-header__burger"
+        data-menu-toggle
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <span class="icon-btn__open"><Icon name="menu" size={19} /></span>
+        <span class="icon-btn__close"><Icon name="close" size={19} /></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav" data-mobile-nav hidden>
+    <nav aria-label="Mobile">
+      <ul>
+        {
+          navLinks.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={`${site.github}?tab=repositories`}>GitHub profile</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(150%) blur(14px);
+    -webkit-backdrop-filter: saturate(150%) blur(14px);
+    border-bottom: 1px solid transparent;
+    transition:
+      border-color 0.3s var(--ease),
+      background-color 0.3s var(--ease);
+  }
+  .site-header.is-stuck {
+    border-bottom-color: var(--line);
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 4.5rem;
+  }
+
+  .brand {
+    font-size: 1.05rem;
+  }
+
+  .site-nav {
+    margin-left: auto;
+  }
+  .site-nav ul {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .site-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 520;
+    color: var(--text-2);
+    transition:
+      color 0.2s var(--ease),
+      background-color 0.2s var(--ease);
+  }
+  .site-nav__link:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+  .site-nav__link.is-active {
+    color: var(--text);
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .icon-btn {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--text-2);
+    transition:
+      color 0.2s var(--ease),
+      border-color 0.2s var(--ease),
+      background-color 0.2s var(--ease);
+  }
+  .icon-btn:hover {
+    color: var(--text);
+    border-color: var(--line-2);
+    background: var(--surface-2);
+  }
+
+  .icon-btn__sun,
+  .icon-btn__moon {
+    grid-area: 1 / 1;
+    display: grid;
+    place-items: center;
+    transition:
+      opacity 0.28s var(--ease),
+      transform 0.38s var(--ease-out);
+  }
+  :global([data-theme='dark']) .icon-btn__sun {
+    opacity: 0;
+    transform: rotate(-60deg) scale(0.6);
+  }
+  :global([data-theme='dark']) .icon-btn__moon {
+    opacity: 1;
+    transform: none;
+  }
+  :global([data-theme='light']) .icon-btn__sun {
+    opacity: 1;
+    transform: none;
+  }
+  :global([data-theme='light']) .icon-btn__moon {
+    opacity: 0;
+    transform: rotate(60deg) scale(0.6);
+  }
+
+  .site-header__burger {
+    display: none;
+  }
+  .icon-btn__open,
+  .icon-btn__close {
+    grid-area: 1 / 1;
+    display: grid;
+    place-items: center;
+  }
+  .site-header__burger[aria-expanded='true'] .icon-btn__open {
+    display: none;
+  }
+  .site-header__burger[aria-expanded='true'] .icon-btn__close {
+    display: grid;
+  }
+
+  .mobile-nav {
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .mobile-nav[hidden] {
+    display: none;
+  }
+  .mobile-nav ul {
+    padding: 0.5rem var(--gutter) 1.5rem;
+  }
+  .mobile-nav a {
+    display: block;
+    padding: 0.8rem 0;
+    font-size: 1.1rem;
+    font-weight: 560;
+    border-bottom: 1px solid var(--line);
+  }
+
+  @media (max-width: 800px) {
+    .site-nav {
+      display: none;
+    }
+    .site-header__burger {
+      display: grid;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  if (header) {
+    const onScroll = () => header.classList.toggle('is-stuck', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+      document.documentElement.dataset.theme = next;
+      try {
+        localStorage.setItem('jb-theme', next);
+      } catch {
+        /* ignore */
+      }
+    });
+  }
+
+  const menuToggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const mobileNav = document.querySelector<HTMLElement>('[data-mobile-nav]');
+  if (menuToggle && mobileNav) {
+    const setOpen = (open: boolean) => {
+      menuToggle.setAttribute('aria-expanded', String(open));
+      menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      mobileNav.hidden = !open;
+    };
+    menuToggle.addEventListener('click', () =>
+      setOpen(menuToggle.getAttribute('aria-expanded') !== 'true')
+    );
+    mobileNav.querySelectorAll('a').forEach((link) =>
+      link.addEventListener('click', () => setOpen(false))
+    );
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    });
+  }
+</script>

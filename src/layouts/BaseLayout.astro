@@ -1,0 +1,83 @@
+---
+import '../styles/global.css';
+import archivoLatin from '../assets/fonts/archivo-latin.woff2?url';
+
+export interface Props {
+  title: string;
+  description: string;
+  accent?: string;
+  image?: string;
+  canonical?: string;
+  noindex?: boolean;
+}
+
+const { title, description, accent, image = '/img/og.png', canonical, noindex } = Astro.props;
+
+const site = 'https://juggybob.github.io';
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {accent && <meta name="theme-color" content={accent} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="JuggyBob" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
+
+    <script is:inline>
+      // Set the theme before first paint so there is no flash of the wrong one.
+      (() => {
+        document.documentElement.classList.add('js');
+        try {
+          const forced = new URLSearchParams(location.search).get('theme');
+          const stored = localStorage.getItem('jb-theme');
+          const system = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+          const chosen =
+            forced === 'light' || forced === 'dark'
+              ? forced
+              : stored === 'light' || stored === 'dark'
+                ? stored
+                : system;
+          document.documentElement.dataset.theme = chosen;
+        } catch (_) {
+          /* private mode — the default dark theme stays */
+        }
+      })();
+    </script>
+
+    <slot name="head" />
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true">
+      <span class="ambient__blob ambient__blob--1"></span>
+      <span class="ambient__blob ambient__blob--2"></span>
+      <span class="ambient__blob ambient__blob--3"></span>
+      <span class="ambient__blob ambient__blob--4"></span>
+      <span class="ambient__blob ambient__blob--5"></span>
+    </div>
+    <slot />
+  </body>
+</html>

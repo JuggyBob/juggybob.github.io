@@ -1,0 +1,92 @@
+---
+export interface Props {
+  src: string;
+  alt: string;
+  /** Visual weight of the frame: a plain bezel, or a bezel with a punch-hole camera. */
+  camera?: boolean;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  sizes?: string;
+  /** Maximum rendered width of the whole device, including the bezel. */
+  width?: string;
+}
+
+const {
+  src,
+  alt,
+  camera = true,
+  class: className = '',
+  loading = 'lazy',
+  sizes = '(max-width: 720px) 62vw, 340px',
+  width,
+} = Astro.props;
+---
+
+<div class={`phone ${className}`} style={width ? `max-width:${width}` : undefined}>
+  <div class="phone__bezel">
+    {
+      camera && (
+        <span class="phone__camera" aria-hidden="true">
+          <span class="phone__lens" />
+        </span>
+      )
+    }
+    <img
+      src={src}
+      alt={alt}
+      loading={loading}
+      decoding="async"
+      sizes={sizes}
+      width="900"
+      height="2000"
+    />
+  </div>
+</div>
+
+<style>
+  .phone {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    margin-inline: auto;
+  }
+  .phone__bezel {
+    position: relative;
+    border-radius: 34px;
+    padding: 9px;
+    background: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--line-2) 90%, var(--surface-3)),
+      var(--surface-2) 42%,
+      color-mix(in srgb, var(--line-2) 70%, var(--surface-3))
+    );
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--text) 12%, transparent) inset,
+      var(--shadow-lg);
+  }
+  .phone__bezel img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 26px;
+    background: var(--bg);
+  }
+  .phone__camera {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: #05070a;
+    box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.09);
+    z-index: 2;
+  }
+  .phone__lens {
+    position: absolute;
+    inset: 2px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, #2a3550, #05070a 70%);
+  }
+</style>
