@@ -55,11 +55,11 @@ jobs:
               exit 1
             fi
           done
-          if ! ls "$OUT"/*.woff2 >/dev/null 2>&1; then
+          if ! find "$OUT" -name '*.woff2' -print -quit | grep -q .; then
             echo "::error::The self-hosted fonts are missing from '$OUT'."
             exit 1
           fi
-          if ! ls "$OUT"/img/*/icon.png >/dev/null 2>&1; then
+          if ! find "$OUT/img" -name 'icon.png' -print -quit | grep -q .; then
             echo "::error::The application icons are missing from '$OUT'."
             exit 1
           fi
