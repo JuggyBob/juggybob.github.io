@@ -21,6 +21,8 @@ const {
   accent,
   class: className = '',
 } = Astro.props;
+
+const id = `dshot-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
 ---
 
 <div class={`dshot ${className}`} data-lightbox-root style={accent ? `--accent:${accent}` : undefined}>
@@ -57,7 +59,7 @@ const {
   </div>
   {caption && <p class="dshot__caption">{caption}</p>}
 
-  <Lightbox shots={[{ src, alt, caption: caption ?? alt }]} id={`dshot-${title}`} accent={accent} />
+  <Lightbox shots={[{ src, alt, caption: caption ?? alt }]} id={id} accent={accent} />
 </div>
 
 <style>
