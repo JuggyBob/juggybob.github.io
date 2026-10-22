@@ -7,36 +7,34 @@ export interface Props {
   accent?: string;
 }
 
-const { shots, id, accent } = Astro.props;
+const { shots, id } = Astro.props;
 ---
 
-<div class="lightbox" data-lightbox-root style={accent ? `--accent:${accent}` : undefined}>
-  <dialog class="lightbox__dialog" id={id} data-lightbox aria-label="Screenshot viewer">
-    <div class="lightbox__bar">
-      <span class="lightbox__count mono" data-lightbox-count></span>
-      <span class="lightbox__caption" data-lightbox-caption>{shots[0]?.caption ?? ''}</span>
-      <button class="lightbox__close" type="button" data-lightbox-close aria-label="Close viewer">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-          <path d="M4 4l8 8M12 4l-8 8" />
-        </svg>
-      </button>
-    </div>
-    <div class="lightbox__stage">
-      <button class="lightbox__nav lightbox__nav--prev" type="button" data-lightbox-prev aria-label="Previous screenshot">
-        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M10 3.5 5.5 8l4.5 4.5" />
-        </svg>
-      </button>
-      <img class="lightbox__image" data-lightbox-image
-        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" />
-      <button class="lightbox__nav lightbox__nav--next" type="button" data-lightbox-next aria-label="Next screenshot">
-        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M6 3.5 10.5 8 6 12.5" />
-        </svg>
-      </button>
-    </div>
-  </dialog>
-</div>
+<dialog class="lightbox__dialog" id={id} data-lightbox aria-label="Screenshot viewer">
+  <div class="lightbox__bar">
+    <span class="lightbox__count mono" data-lightbox-count></span>
+    <span class="lightbox__caption" data-lightbox-caption>{shots[0]?.caption ?? ''}</span>
+    <button class="lightbox__close" type="button" data-lightbox-close aria-label="Close viewer">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 4l8 8M12 4l-8 8" />
+      </svg>
+    </button>
+  </div>
+  <div class="lightbox__stage">
+    <button class="lightbox__nav lightbox__nav--prev" type="button" data-lightbox-prev aria-label="Previous screenshot">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10 3.5 5.5 8l4.5 4.5" />
+      </svg>
+    </button>
+    <img class="lightbox__image" data-lightbox-image
+      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" />
+    <button class="lightbox__nav lightbox__nav--next" type="button" data-lightbox-next aria-label="Next screenshot">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 3.5 10.5 8 6 12.5" />
+      </svg>
+    </button>
+  </div>
+</dialog>
 
 <style>
   .lightbox__dialog {
@@ -152,12 +150,15 @@ const { shots, id, accent } = Astro.props;
 </style>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-lightbox-root]').forEach((root) => {
-    const dialog = root.querySelector<HTMLDialogElement>('[data-lightbox]');
+  // Each lightbox pairs with the nearest `[data-lightbox-root]` container, which
+  // holds both the triggers and the dialog.
+  document.querySelectorAll<HTMLDialogElement>('[data-lightbox]').forEach((dialog) => {
+    const root = dialog.closest<HTMLElement>('[data-lightbox-root]');
+    if (!root) return;
     const image = root.querySelector<HTMLImageElement>('[data-lightbox-image]');
     const caption = root.querySelector<HTMLElement>('[data-lightbox-caption]');
     const count = root.querySelector<HTMLElement>('[data-lightbox-count]');
-    if (!dialog || !image || !caption || !count) return;
+    if (!image || !caption || !count) return;
 
     const triggers = Array.from(
       root.querySelectorAll<HTMLButtonElement>('[data-lightbox-open]')

@@ -11,7 +11,12 @@ export interface Props {
 const { shots, id, accent } = Astro.props;
 ---
 
-<div class="gallery" data-gallery style={accent ? `--accent:${accent}` : undefined}>
+<div
+  class="gallery"
+  data-gallery
+  data-lightbox-root
+  style={accent ? `--accent:${accent}` : undefined}
+>
   <ul class="gallery__grid">
     {
       shots.map((shot) => (
