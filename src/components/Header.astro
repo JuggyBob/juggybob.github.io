@@ -1,12 +1,12 @@
 ---
 import Icon from './Icon.astro';
+import AppMenu from './AppMenu.astro';
 import { navLinks, site } from '../data/site';
-
-const path = Astro.url.pathname;
-const isActive = (href: string) => href.startsWith('/#') ? false : path.startsWith(href);
 ---
 
 <header class="site-header" data-header>
+  <div class="site-header__progress" aria-hidden="true"><span data-progress></span></div>
+
   <div class="wrap wrap-wide site-header__inner">
     <a class="brand" href="/" aria-label="JuggyBob — home">
       <span class="brand__mark" aria-hidden="true">
@@ -29,55 +29,31 @@ const isActive = (href: string) => href.startsWith('/#') ? false : path.startsWi
         {
           navLinks.map((link) => (
             <li>
-              <a href={link.href} class:list={['site-nav__link', { 'is-active': isActive(link.href) }]}>
+              <a class="site-nav__link" href={link.href}>
                 {link.label}
               </a>
             </li>
           ))
         }
-        <li>
-          <a href={`${site.github}?tab=repositories`} class="site-nav__link site-nav__link--ext">
-            <Icon name="github" size={15} />
-            <span>GitHub</span>
-          </a>
-        </li>
       </ul>
     </nav>
 
     <div class="site-header__actions">
+      <a
+        class="icon-btn icon-btn--gh"
+        href={`${site.github}?tab=repositories`}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="JuggyBob on GitHub"
+      >
+        <Icon name="github" size={16} />
+      </a>
       <button class="icon-btn" data-theme-toggle type="button" aria-label="Switch colour theme">
         <span class="icon-btn__sun"><Icon name="sun" size={17} /></span>
         <span class="icon-btn__moon"><Icon name="moon" size={17} /></span>
       </button>
-      <button
-        class="icon-btn site-header__burger"
-        data-menu-toggle
-        type="button"
-        aria-label="Open menu"
-        aria-expanded="false"
-        aria-controls="mobile-nav"
-      >
-        <span class="icon-btn__open"><Icon name="menu" size={19} /></span>
-        <span class="icon-btn__close"><Icon name="close" size={19} /></span>
-      </button>
+      <AppMenu />
     </div>
-  </div>
-
-  <div class="mobile-nav" id="mobile-nav" data-mobile-nav hidden>
-    <nav aria-label="Mobile">
-      <ul>
-        {
-          navLinks.map((link) => (
-            <li>
-              <a href={link.href}>{link.label}</a>
-            </li>
-          ))
-        }
-        <li>
-          <a href={`${site.github}?tab=repositories`}>GitHub profile</a>
-        </li>
-      </ul>
-    </nav>
   </div>
 </header>
 
@@ -86,27 +62,52 @@ const isActive = (href: string) => href.startsWith('/#') ? false : path.startsWi
     position: sticky;
     top: 0;
     z-index: 60;
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: saturate(150%) blur(14px);
-    -webkit-backdrop-filter: saturate(150%) blur(14px);
+    background: color-mix(in srgb, var(--bg) 74%, transparent);
+    backdrop-filter: saturate(160%) blur(16px);
+    -webkit-backdrop-filter: saturate(160%) blur(16px);
     border-bottom: 1px solid transparent;
     transition:
-      border-color 0.3s var(--ease),
-      background-color 0.3s var(--ease);
+      border-color var(--dur-3) var(--ease),
+      background-color var(--dur-3) var(--ease);
   }
   .site-header.is-stuck {
     border-bottom-color: var(--line);
-    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    background: color-mix(in srgb, var(--bg) 90%, transparent);
   }
+  .site-header__progress {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2px;
+    overflow: hidden;
+  }
+  .site-header__progress span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    transform: scaleX(var(--scroll-progress, 0));
+    transform-origin: 0 50%;
+    background: linear-gradient(90deg, var(--brand), var(--brand-2));
+    opacity: 0;
+    transition: opacity var(--dur-2) var(--ease);
+  }
+  .site-header.is-stuck .site-header__progress span {
+    opacity: 1;
+  }
+
   .site-header__inner {
     display: flex;
     align-items: center;
     gap: 1.5rem;
     height: 4.5rem;
+    transition: height var(--dur-3) var(--ease);
+  }
+  .site-header.is-stuck .site-header__inner {
+    height: 3.9rem;
   }
 
   .brand {
     font-size: 1.05rem;
+    flex: none;
   }
 
   .site-nav {
@@ -115,27 +116,23 @@ const isActive = (href: string) => href.startsWith('/#') ? false : path.startsWi
   .site-nav ul {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.25rem;
   }
   .site-nav__link {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.45rem 0.75rem;
+    padding: 0.45rem 0.8rem;
     border-radius: 999px;
     font-size: 0.88rem;
     font-weight: 520;
     color: var(--text-2);
     transition:
-      color 0.2s var(--ease),
-      background-color 0.2s var(--ease);
+      color var(--dur-1) var(--ease),
+      background-color var(--dur-1) var(--ease);
   }
   .site-nav__link:hover {
     color: var(--text);
     background: var(--surface-2);
-  }
-  .site-nav__link.is-active {
-    color: var(--text);
   }
 
   .site-header__actions {
@@ -147,20 +144,24 @@ const isActive = (href: string) => href.startsWith('/#') ? false : path.startsWi
   .icon-btn {
     display: grid;
     place-items: center;
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2.3rem;
+    height: 2.3rem;
     border-radius: 999px;
     border: 1px solid var(--line);
     color: var(--text-2);
     transition:
-      color 0.2s var(--ease),
-      border-color 0.2s var(--ease),
-      background-color 0.2s var(--ease);
+      color var(--dur-1) var(--ease),
+      border-color var(--dur-1) var(--ease),
+      background-color var(--dur-1) var(--ease),
+      transform var(--dur-1) var(--ease);
   }
   .icon-btn:hover {
     color: var(--text);
     border-color: var(--line-2);
     background: var(--surface-2);
+  }
+  .icon-btn:active {
+    transform: scale(0.94);
   }
 
   .icon-btn__sun,
@@ -169,12 +170,12 @@ const isActive = (href: string) => href.startsWith('/#') ? false : path.startsWi
     display: grid;
     place-items: center;
     transition:
-      opacity 0.28s var(--ease),
-      transform 0.38s var(--ease-out);
+      opacity var(--dur-3) var(--ease),
+      transform var(--dur-3) var(--ease-out);
   }
   :global([data-theme='dark']) .icon-btn__sun {
     opacity: 0;
-    transform: rotate(-60deg) scale(0.6);
+    transform: rotate(-60deg) scale(0.5);
   }
   :global([data-theme='dark']) .icon-btn__moon {
     opacity: 1;
@@ -186,50 +187,21 @@ const isActive = (href: string) => href.startsWith('/#') ? false : path.startsWi
   }
   :global([data-theme='light']) .icon-btn__moon {
     opacity: 0;
-    transform: rotate(60deg) scale(0.6);
+    transform: rotate(60deg) scale(0.5);
   }
 
-  .site-header__burger {
-    display: none;
-  }
-  .icon-btn__open,
-  .icon-btn__close {
-    grid-area: 1 / 1;
-    display: grid;
-    place-items: center;
-  }
-  .site-header__burger[aria-expanded='true'] .icon-btn__open {
-    display: none;
-  }
-  .site-header__burger[aria-expanded='true'] .icon-btn__close {
-    display: grid;
-  }
-
-  .mobile-nav {
-    border-top: 1px solid var(--line);
-    background: var(--bg);
-    overflow: hidden;
-  }
-  .mobile-nav[hidden] {
-    display: none;
-  }
-  .mobile-nav ul {
-    padding: 0.5rem var(--gutter) 1.5rem;
-  }
-  .mobile-nav a {
-    display: block;
-    padding: 0.8rem 0;
-    font-size: 1.1rem;
-    font-weight: 560;
-    border-bottom: 1px solid var(--line);
-  }
-
-  @media (max-width: 800px) {
+  @media (max-width: 860px) {
     .site-nav {
       display: none;
     }
-    .site-header__burger {
-      display: grid;
+    .icon-btn--gh {
+      display: none;
+    }
+    .site-header__inner {
+      height: 4rem;
+    }
+    .site-header.is-stuck .site-header__inner {
+      height: 3.6rem;
     }
   }
 </style>
@@ -237,9 +209,26 @@ const isActive = (href: string) => href.startsWith('/#') ? false : path.startsWi
 <script>
   const header = document.querySelector<HTMLElement>('[data-header]');
   if (header) {
-    const onScroll = () => header.classList.toggle('is-stuck', window.scrollY > 8);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    let ticking = false;
+    const update = () => {
+      const y = window.scrollY;
+      header.classList.toggle('is-stuck', y > 12);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? Math.min(1, y / max) : 0;
+      document.documentElement.style.setProperty('--scroll-progress', progress.toFixed(4));
+      ticking = false;
+    };
+    update();
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+      },
+      { passive: true }
+    );
+    window.addEventListener('resize', update, { passive: true });
   }
 
   const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
@@ -252,25 +241,6 @@ const isActive = (href: string) => href.startsWith('/#') ? false : path.startsWi
       } catch {
         /* ignore */
       }
-    });
-  }
-
-  const menuToggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
-  const mobileNav = document.querySelector<HTMLElement>('[data-mobile-nav]');
-  if (menuToggle && mobileNav) {
-    const setOpen = (open: boolean) => {
-      menuToggle.setAttribute('aria-expanded', String(open));
-      menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-      mobileNav.hidden = !open;
-    };
-    menuToggle.addEventListener('click', () =>
-      setOpen(menuToggle.getAttribute('aria-expanded') !== 'true')
-    );
-    mobileNav.querySelectorAll('a').forEach((link) =>
-      link.addEventListener('click', () => setOpen(false))
-    );
-    window.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') setOpen(false);
     });
   }
 </script>

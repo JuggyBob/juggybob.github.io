@@ -26,6 +26,8 @@ export interface FeatureBlock {
   /** Which side the artwork sits on at desktop widths. */
   side?: 'left' | 'right';
   frame?: 'phone' | 'window';
+  /** A wide feature spans the full column with a larger artwork. */
+  wide?: boolean;
 }
 
 export interface WorkflowStep {
@@ -50,6 +52,12 @@ export interface Project {
   name: string;
   tagline: string;
   summary: string;
+  /** Short label shown in the application menu, e.g. "Main project". */
+  badge?: string;
+  /** Two or three very short capability notes used in the application menu. */
+  menuHighlights: string[];
+  /** Thumbnail used in the application menu and the hero preview cards. */
+  preview: { src: string; alt: string };
   problem: { heading: string; body: string; audience: Audience[] };
   platform: Platform;
   platforms: Platform[];
@@ -82,6 +90,15 @@ export const projects: Project[] = [
     tagline: 'A workout logger that keeps the numbers straight.',
     summary:
       'A dark-themed workout logger for strength training and calisthenics, built for the gym: offline by default, no account, no tracking, and a 1,333-movement catalogue whose animations stream on demand instead of being shipped inside the APK.',
+    badge: 'Main project',
+    menuHighlights: [
+      '1,333 exercises, streamed animations',
+      'Autosaved sessions that survive a crash',
+    ],
+    preview: {
+      src: '/img/ironpulse/dashboard.webp',
+      alt: 'The IronPulse home dashboard.',
+    },
     problem: {
       heading: 'Most workout apps want your account, your subscription and your training history.',
       body: 'IronPulse was written for the opposite of that. There is nothing to sign up for, nothing to subscribe to and no screen that needs a connection. Every set you log, every routine you build and every weigh-in you record lives in a database on your own phone, and you can wipe all of it in one tap when you want to.',
@@ -349,6 +366,15 @@ export const projects: Project[] = [
     tagline: 'Sixty-six calculators, one Android app.',
     summary:
       'A fast everyday keypad, a full calculus workbench, an electrical circuit editor that works out the circuits you draw, and an AI that reads a photograph of a problem. Every tool computes for real and shows its working rather than a bare number.',
+    badge: 'Toolkit',
+    menuHighlights: [
+      '66 calculators, 14 of them calculus',
+      'A circuit editor that solves what you draw',
+    ],
+    preview: {
+      src: '/img/calcsuite/calculus.webp',
+      alt: 'The Calculator Suite function graphing tool.',
+    },
     problem: {
       heading: 'A calculator app on a phone does one thing. A second-year module needs sixty-six.',
       body: 'Calculator Suite exists because a single keypad cannot carry a whole syllabus. Every tool in it performs a real computation with the mathematics that suits the problem — exact arithmetic where exact arithmetic is possible, an honest approximation with its method named where it is not — and every tool shows its working instead of a bare number.',
@@ -571,6 +597,15 @@ export const projects: Project[] = [
     tagline: 'Every game discount from Steam, GOG and Epic in one feed.',
     summary:
       'A native Android app that pulls live discounts from the Steam Store, GOG and the Epic Games Store, merges them into a single daily feed, and lets you save games so you hear about them when the price drops.',
+    badge: 'Game deals',
+    menuHighlights: [
+      'Steam, GOG and Epic in one feed',
+      'Alerts that arrive with the app closed',
+    ],
+    preview: {
+      src: '/img/discounthunter/feed.webp',
+      alt: 'The Discount Hunter deals feed.',
+    },
     problem: {
       heading: 'A game on sale means checking three storefronts, three times a month.',
       body: 'Discount Hunter does the checking. It reads the live discount feeds of Steam, GOG and the Epic Games Store, merges them into one list, and tells you when a game you saved goes on sale — or becomes free to keep — even when the app is closed. Prices are quoted in the currency the store actually used, and converted prices are marked so they are never mistaken for quoted ones.',
@@ -795,6 +830,15 @@ export const projects: Project[] = [
     tagline: 'A native Windows front end for the scc engine.',
     summary:
       'A native Windows desktop application that analyses a codebase with the pinned, frozen scc engine and presents the result either as a rich in-app dashboard or as scc’s own self-contained HTML infographic. It never makes a network request.',
+    badge: 'Windows tool',
+    menuHighlights: [
+      'Metric cards, hotspots and bus factor',
+      'No network request, ever',
+    ],
+    preview: {
+      src: '/img/codescope/report.webp',
+      alt: 'The CodeScope in-app report dashboard.',
+    },
     problem: {
       heading: 'Measuring a codebase should not need a toolchain, a runtime and a terminal window.',
       body: 'CodeScope bundles the scc engine — frozen at a known commit, with its hashes recorded — so that measuring a codebase is a matter of picking a folder and pressing a button. The result is a readable dashboard rather than a wall of terminal output, every optional section has a switch that actually works, and the whole thing never touches the network.',
@@ -887,6 +931,7 @@ export const projects: Project[] = [
           'The CodeScope in-app report dashboard showing the overview metric cards and the language breakdown table for the IronPulse codebase.',
         side: 'left',
         frame: 'window',
+        wide: true,
       },
       {
         id: 'history',

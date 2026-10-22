@@ -2,13 +2,15 @@
 export interface Props {
   src: string;
   alt: string;
-  /** Visual weight of the frame: a plain bezel, or a bezel with a punch-hole camera. */
+  /** Render the punch-hole camera. */
   camera?: boolean;
   class?: string;
   loading?: 'lazy' | 'eager';
   sizes?: string;
   /** Maximum rendered width of the whole device, including the bezel. */
   width?: string;
+  /** Slight tilt applied to the device, in degrees. */
+  tilt?: number;
 }
 
 const {
@@ -19,11 +21,15 @@ const {
   loading = 'lazy',
   sizes = '(max-width: 720px) 62vw, 340px',
   width,
+  tilt = 0,
 } = Astro.props;
 ---
 
-<div class={`phone ${className}`} style={width ? `max-width:${width}` : undefined}>
-  <div class="phone__bezel">
+<div
+  class={`phone ${className}`}
+  style={`${width ? `max-width:${width};` : ''}${tilt ? `--tilt:${tilt}deg;` : ''}`}
+>
+  <div class="phone__body">
     {
       camera && (
         <span class="phone__camera" aria-hidden="true">
@@ -31,15 +37,18 @@ const {
         </span>
       )
     }
-    <img
-      src={src}
-      alt={alt}
-      loading={loading}
-      decoding="async"
-      sizes={sizes}
-      width="900"
-      height="2000"
-    />
+    <div class="phone__screen">
+      <img
+        src={src}
+        alt={alt}
+        loading={loading}
+        decoding="async"
+        sizes={sizes}
+        width="900"
+        height="2000"
+      />
+      <span class="phone__glare" aria-hidden="true"></span>
+    </div>
   </div>
 </div>
 
@@ -49,44 +58,71 @@ const {
     width: 100%;
     max-width: 320px;
     margin-inline: auto;
+    transform: rotate(var(--tilt, 0deg));
+    transform-origin: 50% 60%;
+    transition: transform var(--dur-3) var(--ease-out);
   }
-  .phone__bezel {
+  .phone__body {
     position: relative;
-    border-radius: 34px;
-    padding: 9px;
+    border-radius: 13%/6.2%;
+    padding: 3px;
     background: linear-gradient(
-      160deg,
-      color-mix(in srgb, var(--line-2) 90%, var(--surface-3)),
-      var(--surface-2) 42%,
-      color-mix(in srgb, var(--line-2) 70%, var(--surface-3))
+      145deg,
+      color-mix(in srgb, var(--text) 26%, transparent) 0%,
+      color-mix(in srgb, var(--surface-3) 92%, transparent) 26%,
+      color-mix(in srgb, var(--text) 10%, transparent) 52%,
+      color-mix(in srgb, var(--surface-3) 96%, transparent) 78%,
+      color-mix(in srgb, var(--text) 22%, transparent) 100%
     );
     box-shadow:
-      0 1px 0 color-mix(in srgb, var(--text) 12%, transparent) inset,
-      var(--shadow-lg);
+      0 0 0 1px color-mix(in srgb, var(--text) 8%, transparent),
+      var(--shadow-3);
   }
-  .phone__bezel img {
+  .phone__screen {
+    position: relative;
+    border-radius: 12.4%/5.8%;
+    overflow: hidden;
+    background: #05070b;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+  .phone__screen img {
     width: 100%;
     height: auto;
     display: block;
-    border-radius: 26px;
-    background: var(--bg);
+  }
+  /* A soft diagonal sheen so the glass reads as glass. */
+  .phone__glare {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      118deg,
+      rgba(255, 255, 255, 0.13) 0%,
+      rgba(255, 255, 255, 0.03) 26%,
+      transparent 46%
+    );
+    mix-blend-mode: screen;
+    opacity: 0.55;
+  }
+  [data-theme='light'] .phone__glare {
+    opacity: 0.3;
   }
   .phone__camera {
     position: absolute;
-    top: 16px;
+    top: 13px;
     left: 50%;
     transform: translateX(-50%);
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: 999px;
-    background: #05070a;
-    box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.09);
-    z-index: 2;
+    background: #04060a;
+    box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.1);
+    z-index: 3;
   }
   .phone__lens {
     position: absolute;
-    inset: 2px;
+    inset: 1.5px;
     border-radius: 999px;
-    background: radial-gradient(circle at 30% 30%, #2a3550, #05070a 70%);
+    background: radial-gradient(circle at 32% 30%, #33405e, #04060a 72%);
   }
 </style>

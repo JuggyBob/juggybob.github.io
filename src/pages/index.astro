@@ -3,8 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
+import HomeHero from '../components/HomeHero.astro';
 import PhoneFrame from '../components/PhoneFrame.astro';
-import WindowFrame from '../components/WindowFrame.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { projects, bySlug } from '../data/projects';
 import { site } from '../data/site';
@@ -14,17 +14,17 @@ const calcsuite = bySlug('calcsuite');
 const hunter = bySlug('discount-hunter');
 const codescope = bySlug('codescope');
 
-const galleryStrip = [
+const strip = [
   {
     project: ironpulse,
     src: '/img/ironpulse/exercise.webp',
-    alt: 'An IronPulse exercise detail page with the movement animation and instructions.',
+    alt: 'An IronPulse exercise detail page with the movement animation and coaching instructions.',
     caption: 'Exercise detail — animation and instructions',
   },
   {
     project: calcsuite,
     src: '/img/calcsuite/calculus.webp',
-    alt: 'The Calculator Suite function graphing tool with a shaded area under the curve.',
+    alt: 'The Calculator Suite function graphing tool with its derivative and the area under the curve.',
     caption: 'Function graphing with f, f′ and the area',
   },
   {
@@ -50,198 +50,128 @@ const galleryStrip = [
   <Header />
 
   <main id="main">
-    <!-- ============================================================ hero -->
-    <section class="hero">
-      <div class="hero__grid" aria-hidden="true"></div>
-      <div class="hero__glow" aria-hidden="true"></div>
+    <HomeHero />
 
-      <div class="wrap wrap-wide hero__inner">
-        <div class="hero__copy">
-          <p class="eyebrow" data-reveal>Independent software · Android &amp; Windows</p>
-          <h1 class="hero__title" data-reveal style="--reveal-delay:60ms">
-            Four apps built to be <span class="grad">used</span>, not just downloaded.
-          </h1>
-          <p class="lede hero__lede" data-reveal style="--reveal-delay:120ms">
-            A workout logger with a 1,333-movement library. A mathematics toolkit with
-            sixty-six calculators and a circuit editor. A deal feed that merges Steam, GOG and
-            Epic. And a native Windows front end for the <span class="mono">scc</span> code-analysis
-            engine.
-          </p>
-
-          <div class="hero__actions" data-reveal style="--reveal-delay:180ms">
-            <a class="btn" href="#apps">
-              <span>Explore the apps</span>
-              <Icon name="arrow-right" size={15} />
-            </a>
-            <a class="btn btn--ghost" href={site.github} target="_blank" rel="noopener noreferrer">
-              <Icon name="github" size={15} />
-              <span>GitHub profile</span>
-            </a>
+    <!-- ====================================================== showcase -->
+    <section class="showcase" id="showcase" data-carousel style={`--accent:${ironpulse.accent}`}>
+      <div class="wrap wrap-wide">
+        <div class="showcase__head">
+          <div>
+            <p class="eyebrow" data-reveal="rise">The collection</p>
+            <h2 data-reveal="rise" style="--reveal-delay:60ms">Four products, one workshop.</h2>
           </div>
-
-          <dl class="hero__facts" data-reveal style="--reveal-delay:240ms">
-            <div>
-              <dt class="mono">Projects</dt>
-              <dd>4</dd>
-            </div>
-            <div>
-              <dt class="mono">Platforms</dt>
-              <dd>Android · Windows</dd>
-            </div>
-            <div>
-              <dt class="mono">Accounts</dt>
-              <dd>None</dd>
-            </div>
-            <div>
-              <dt class="mono">Trackers</dt>
-              <dd>None</dd>
-            </div>
-          </dl>
+          <div class="showcase__nav">
+            <span class="showcase__counter mono" data-carousel-counter>01 / 04</span>
+            <button class="showcase__arrow" type="button" data-carousel-prev aria-label="Show the previous project">
+              <Icon name="chevron-left" size={17} />
+            </button>
+            <button class="showcase__arrow" type="button" data-carousel-next aria-label="Show the next project">
+              <Icon name="chevron-right" size={17} />
+            </button>
+          </div>
         </div>
 
-        <div class="hero__stage" data-reveal style="--reveal-delay:120ms">
-          <div class="hero__slot hero__slot--back">
-            <WindowFrame
-              src="/img/codescope/report.webp"
-              alt="The CodeScope report dashboard with metric cards and a language breakdown table."
-              title="CodeScope — report"
-            />
-          </div>
-          <div class="hero__slot hero__slot--mid">
-            <PhoneFrame
-              src="/img/calcsuite/calculus.webp"
-              alt="The Calculator Suite function graphing tool."
-              sizes="(max-width: 720px) 40vw, 170px"
-            />
-          </div>
-          <div class="hero__slot hero__slot--front">
-            <PhoneFrame
-              src="/img/ironpulse/dashboard.webp"
-              alt="The IronPulse home dashboard on a phone."
-              loading="eager"
-              sizes="(max-width: 720px) 62vw, 230px"
-            />
-          </div>
-          <span class="hero__tag hero__tag--a">IronPulse</span>
-          <span class="hero__tag hero__tag--b">Calculator Suite</span>
-          <span class="hero__tag hero__tag--c">CodeScope</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================================================== featured apps -->
-    <section class="feature" id="feature" data-carousel>
-      <div class="wrap wrap-wide feature__inner">
-        <div class="feature__rail">
-          <button class="feature__nav feature__nav--prev" type="button" data-carousel-prev aria-label="Show the previous project">
-            <Icon name="chevron-left" size={18} />
-          </button>
-
-          <div class="feature__slides">
-            {
-              projects.map((project, index) => (
-                <article
-                  class={`feature__slide ${index === 0 ? 'is-active' : ''}`}
-                  data-carousel-slide
-                  data-index={index}
-                  aria-hidden={index === 0 ? 'false' : 'true'}
-                  style={`--accent:${project.accent};--accent-ink:${project.accentInk}`}
-                >
-                  <div class="feature__copy">
-                    <p class="feature__flag">
-                      <span class="feature__flag-label">{project.showcase.label}</span>
-                      <span class="feature__flag-index mono">
-                        {String(index + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
-                      </span>
-                    </p>
-                    <h2 class="feature__title">
-                      <span class="feature__name">{project.name}</span>
-                      {project.tagline}
-                    </h2>
-                    <p class="lede">{project.summary}</p>
-
-                    <ul class="feature__list">
-                      {project.highlights.map((point) => (
-                        <li>
-                          <Icon name="check" size={14} />
-                          <span>{point}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div class="feature__actions">
-                      <a class="btn btn--accent" href={`/apps/${project.slug}/`}>
-                        <span>Open the product page</span>
-                        <Icon name="arrow-right" size={15} />
-                      </a>
-                      <a class="btn btn--ghost" href={project.releases} target="_blank" rel="noopener noreferrer">
-                        <Icon name="download" size={15} />
-                        <span>Latest release</span>
-                      </a>
-                      <a class="btn btn--ghost" href={project.repo} target="_blank" rel="noopener noreferrer">
-                        <Icon name="github" size={15} />
-                        <span>Source code</span>
-                      </a>
-                    </div>
-
-                    <dl class="feature__stats">
-                      {project.facts.slice(0, 4).map((fact) => (
-                        <div>
-                          <dt class="mono">{fact.label}</dt>
-                          <dd>{fact.value}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </div>
-
-                  <div class="feature__stage">
-                    <div class="feature__art">
-                      {project.showcase.hero.frame === 'window' ? (
-                        <div class="feature__window-slot">
-                          <WindowFrame
-                            src={project.showcase.hero.src}
-                            alt={project.showcase.hero.alt}
-                            title={`${project.name} — report`}
-                          />
-                        </div>
-                      ) : (
-                        <div class="feature__phone-slot">
-                          <PhoneFrame
-                            src={project.showcase.hero.src}
-                            alt={project.showcase.hero.alt}
-                            loading={index === 0 ? 'eager' : 'lazy'}
-                            sizes="(max-width: 900px) 62vw, 280px"
-                          />
-                        </div>
-                      )}
-                    </div>
-                    <figure class="feature__mini">
-                      <img
-                        src={project.showcase.detail.src}
-                        alt={project.showcase.detail.alt}
-                        loading="lazy"
-                        decoding="async"
-                        width="900"
-                        height="2000"
+        <div class="showcase__stage" data-carousel-stage>
+          {
+            projects.map((project, index) => (
+              <article
+                class={`showcase__slide ${index === 0 ? 'is-active' : ''}`}
+                data-carousel-slide
+                data-index={index}
+                aria-hidden={index === 0 ? 'false' : 'true'}
+                style={`--accent:${project.accent};--accent-ink:${project.accentInk}`}
+              >
+                <div class="showcase__copy">
+                  <p class="showcase__label mono">
+                    <span class="showcase__dot" aria-hidden="true" />
+                    {project.showcase.label}
+                    <span class="showcase__platform">
+                      <Icon
+                        name={project.platform === 'Android' ? 'android' : 'windows'}
+                        size={12}
                       />
-                      <figcaption>{project.showcase.detail.alt}</figcaption>
-                    </figure>
-                  </div>
-                </article>
-              ))
-            }
-          </div>
+                      {project.platform}
+                    </span>
+                  </p>
+                  <h3 class="showcase__name">{project.name}</h3>
+                  <p class="showcase__tagline">{project.tagline}</p>
+                  <p class="showcase__body">{project.summary}</p>
 
-          <button class="feature__nav feature__nav--next" type="button" data-carousel-next aria-label="Show the next project">
-            <Icon name="chevron-right" size={18} />
-          </button>
+                  <ul class="showcase__points">
+                    {project.highlights.map((point) => (
+                      <li>
+                        <Icon name="check" size={13} />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div class="showcase__actions">
+                    <a class="btn btn--accent" href={`/apps/${project.slug}/`}>
+                      <span>Open {project.name}</span>
+                      <Icon name="arrow-right" size={15} />
+                    </a>
+                    <a
+                      class="btn btn--ghost"
+                      href={project.releases}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Icon name="download" size={15} />
+                      <span>Latest release</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="showcase__art">
+                  {project.showcase.hero.frame === 'window' ? (
+                    <div class="showcase__window">
+                      <div class="showcase__windowbar" aria-hidden="true">
+                        <i />
+                        <i />
+                        <i />
+                        <span class="mono">{project.name} — report</span>
+                      </div>
+                      <img
+                        src={project.showcase.hero.src}
+                        alt={project.showcase.hero.alt}
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                        decoding="async"
+                        width="1800"
+                        height="976"
+                      />
+                    </div>
+                  ) : (
+                    <div class="showcase__phone">
+                      <PhoneFrame
+                        src={project.showcase.hero.src}
+                        alt={project.showcase.hero.alt}
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                        sizes="(max-width: 900px) 60vw, 260px"
+                      />
+                    </div>
+                  )}
+                  <figure class="showcase__mini">
+                    <img
+                      src={project.showcase.detail.src}
+                      alt={project.showcase.detail.alt}
+                      loading="lazy"
+                      decoding="async"
+                      width="900"
+                      height="2000"
+                    />
+                  </figure>
+                </div>
+              </article>
+            ))
+          }
         </div>
 
-        <div class="feature__tabs" role="tablist" aria-label="Choose a project">
+        <div class="showcase__tabs" role="tablist" aria-label="Choose a project">
           {
             projects.map((project, index) => (
               <button
-                class={`feature__tab ${index === 0 ? 'is-active' : ''}`}
+                class={`showcase__tab ${index === 0 ? 'is-active' : ''}`}
                 type="button"
                 role="tab"
                 data-carousel-tab
@@ -250,12 +180,12 @@ const galleryStrip = [
                 tabindex={index === 0 ? '0' : '-1'}
                 style={`--accent:${project.accent}`}
               >
-                <span class="feature__tab-icon">
+                <span class="showcase__tab-icon">
                   <img src={project.icon} alt="" width="30" height="30" loading="lazy" decoding="async" />
                 </span>
-                <span class="feature__tab-text">
-                  <span class="feature__tab-name">{project.name}</span>
-                  <span class="feature__tab-meta mono">{project.platform}</span>
+                <span class="showcase__tab-text">
+                  <span class="showcase__tab-name">{project.name}</span>
+                  <span class="showcase__tab-meta mono">{project.platform}</span>
                 </span>
               </button>
             ))
@@ -264,15 +194,15 @@ const galleryStrip = [
       </div>
     </section>
 
-    <!-- ================================================ project directory -->
+    <!-- ====================================================== directory -->
     <section class="section" id="apps">
       <div class="wrap wrap-wide">
         <div class="section__head">
           <div>
-            <p class="eyebrow" data-reveal>The directory</p>
-            <h2 data-reveal style="--reveal-delay:60ms">Everything here, in one place.</h2>
+            <p class="eyebrow" data-reveal="rise">The directory</p>
+            <h2 data-reveal="rise" style="--reveal-delay:60ms">Everything here, in one place.</h2>
           </div>
-          <p class="section__note" data-reveal style="--reveal-delay:120ms">
+          <p class="section__note" data-reveal="side-r" style="--reveal-delay:120ms">
             Three applications for Android and one native Windows tool. Filter by the platform
             they run on.
           </p>
@@ -296,25 +226,68 @@ const galleryStrip = [
         <div class="project-grid" data-project-grid>
           {
             projects.map((project, index) => (
-              <ProjectCard
-                project={project}
-                variant={index === 0 ? 'wide' : 'default'}
-              />
+              <ProjectCard project={project} variant={index === 0 ? 'wide' : 'default'} />
             ))
           }
         </div>
       </div>
     </section>
 
-    <!-- ========================================================== gallery -->
+    <!-- ==================================================== deep-dive band -->
+    <section class="band" aria-label="Discount Hunter">
+      <div class="wrap wrap-wide band__inner">
+        <div class="band__art" data-reveal="side">
+          <div class="band__phones">
+            <PhoneFrame
+              src="/img/discounthunter/feed.webp"
+              alt="The Discount Hunter deals feed showing live discounts from Steam, GOG and the Epic Games Store."
+              loading="lazy"
+              sizes="(max-width: 900px) 42vw, 230px"
+            />
+            <PhoneFrame
+              src="/img/discounthunter/detail.webp"
+              alt="A Discount Hunter game page comparing the GOG and Steam price for the same game."
+              loading="lazy"
+              sizes="(max-width: 900px) 42vw, 230px"
+            />
+          </div>
+        </div>
+        <div class="band__copy" data-reveal="rise" style="--reveal-delay:80ms">
+          <p class="eyebrow">Game deals · Android</p>
+          <h2>One feed instead of three storefronts.</h2>
+          <p class="lede">
+            Discount Hunter reads the live discount feeds of Steam, GOG and the Epic Games
+            Store, merges them into one daily list, and compares the price in every store that
+            has the game. Save a title and it tells you when the price drops — with the app
+            closed.
+          </p>
+          <ul class="band__points">
+            {
+              hunter.highlights.map((point) => (
+                <li>
+                  <Icon name="check" size={14} />
+                  <span>{point}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <a class="btn btn--accent" href={`/apps/${hunter.slug}/`} style={`--accent:${hunter.accent};--accent-ink:${hunter.accentInk}`}>
+            <span>Open Discount Hunter</span>
+            <Icon name="arrow-right" size={15} />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================== strip -->
     <section class="section section--strip" id="gallery">
       <div class="wrap wrap-wide">
         <div class="section__head">
           <div>
-            <p class="eyebrow" data-reveal>Inside the apps</p>
-            <h2 data-reveal style="--reveal-delay:60ms">This is what they actually look like.</h2>
+            <p class="eyebrow" data-reveal="rise">Inside the apps</p>
+            <h2 data-reveal="rise" style="--reveal-delay:60ms">This is what they actually look like.</h2>
           </div>
-          <p class="section__note" data-reveal style="--reveal-delay:120ms">
+          <p class="section__note" data-reveal="side-r" style="--reveal-delay:120ms">
             Real screens from the released applications — no mock-ups, no stock photography.
             Each one opens the product page it belongs to.
           </p>
@@ -322,13 +295,12 @@ const galleryStrip = [
 
         <div class="strip">
           {
-            galleryStrip.map((item, index) => (
+            strip.map((item, index) => (
               <a
                 class="strip__card"
                 href={`/apps/${item.project.slug}/`}
-                style={`--accent:${item.project.accent}`}
-                data-reveal
-                data-reveal-delay={`${index * 70}ms`}
+                data-reveal="rise"
+                style={`--accent:${item.project.accent};--reveal-delay:${index * 70}ms`}
               >
                 <span class="strip__frame">
                   <img
@@ -352,34 +324,34 @@ const galleryStrip = [
       </div>
     </section>
 
-    <!-- ============================================================ about -->
+    <!-- ========================================================== about -->
     <section class="section" id="about">
       <div class="wrap wrap-wide about">
         <div class="about__lead">
-          <p class="eyebrow" data-reveal>About</p>
-          <h2 data-reveal style="--reveal-delay:60ms">
+          <p class="eyebrow" data-reveal="rise">About</p>
+          <h2 data-reveal="rise" style="--reveal-delay:60ms">
             One developer, four applications, no company behind them.
           </h2>
         </div>
         <div class="about__body">
-          <p data-reveal style="--reveal-delay:100ms">
+          <p data-reveal="rise" style="--reveal-delay:100ms">
             JuggyBob is the name I build and ship under. Everything on this site is
             independent software I design, implement, test and release myself — Android
             applications written in Kotlin with Jetpack Compose, and a native Windows desktop
             tool written in WPF on .NET.
           </p>
-          <p data-reveal style="--reveal-delay:140ms">
+          <p data-reveal="rise" style="--reveal-delay:140ms">
             The apps share a set of values, because I wanted them for myself first: they work
             without an account, they work without a network, they do not carry analytics or
             advertising, and the data you put into them stays on your device. Where a feature
             genuinely needs the internet — live store prices, exchange rates, an AI provider —
             it is opt-in, and the app says plainly what it sends.
           </p>
-          <p data-reveal style="--reveal-delay:180ms">
+          <p data-reveal="rise" style="--reveal-delay:180ms">
             The source code for all four is public, issues and pull requests are welcome, and
             every release ships with a checksum so you can verify what you downloaded.
           </p>
-          <p class="about__method" data-reveal style="--reveal-delay:210ms">
+          <p class="about__method" data-reveal="rise" style="--reveal-delay:210ms">
             <span class="mono about__method-label">Method</span>
             <span>
               I design the architecture, write the specifications and domain models, do the
@@ -388,7 +360,7 @@ const galleryStrip = [
               knowing before you read the source.
             </span>
           </p>
-          <div class="about__actions" data-reveal style="--reveal-delay:220ms">
+          <div class="about__actions" data-reveal="rise" style="--reveal-delay:250ms">
             <a class="btn" href={site.github} target="_blank" rel="noopener noreferrer">
               <Icon name="github" size={15} />
               <span>Follow on GitHub</span>
@@ -396,7 +368,7 @@ const galleryStrip = [
             <span class="mono about__handle">@{site.githubHandle}</span>
           </div>
         </div>
-        <ul class="about__repos" data-reveal style="--reveal-delay:160ms">
+        <ul class="about__repos" data-reveal="side-r" style="--reveal-delay:160ms">
           {
             projects.map((project) => (
               <li style={`--accent:${project.accent}`}>
@@ -426,349 +398,230 @@ const galleryStrip = [
 </BaseLayout>
 
 <style>
-  /* ------------------------------------------------------------ hero */
-  .hero {
+  /* --------------------------------------------------------- showcase */
+  .showcase {
     position: relative;
-    padding-block: clamp(3rem, 7vw, 6rem) clamp(3.5rem, 7vw, 6rem);
-    overflow: hidden;
-  }
-  .hero__grid {
-    position: absolute;
-    inset: -20% -10% auto -10%;
-    height: 140%;
-    background-image:
-      linear-gradient(to right, var(--line) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(85% 65% at 55% 30%, #000 0%, transparent 78%);
-    -webkit-mask-image: radial-gradient(85% 65% at 55% 30%, #000 0%, transparent 78%);
-    opacity: 0.75;
-    pointer-events: none;
-  }
-  .hero__glow {
-    position: absolute;
-    top: -20%;
-    left: 52%;
-    width: 62rem;
-    height: 62rem;
-    transform: translateX(-30%);
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--brand) 16%, transparent) 0%,
-      transparent 62%
-    );
-    pointer-events: none;
-  }
-  .hero__inner {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
-    align-items: center;
-    gap: clamp(2rem, 5vw, 4.5rem);
-  }
-  .hero__title {
-    margin-top: 1.1rem;
-  }
-  .hero__lede {
-    margin-top: 1.4rem;
-    max-width: 52ch;
-  }
-  .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem;
-    margin-top: 2rem;
-  }
-  .hero__facts {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, auto));
-    gap: clamp(1rem, 3vw, 2.4rem);
-    margin-top: 2.6rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--line);
-  }
-  .hero__facts dt {
-    font-size: 0.66rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--text-3);
-  }
-  .hero__facts dd {
-    margin: 0.3rem 0 0;
-    font-size: 0.98rem;
-    font-weight: 560;
-    letter-spacing: -0.015em;
-  }
-
-  .hero__stage {
-    position: relative;
-    min-height: 31rem;
-    aspect-ratio: 1 / 1;
-    max-width: 34rem;
-    margin-inline: auto;
-    width: 100%;
-  }
-  .hero__slot {
-    position: absolute;
-  }
-  .hero__slot--back {
-    top: -3%;
-    right: -7%;
-    width: min(96%, 30rem);
-    opacity: 0.5;
-    transform: rotate(-2.4deg);
-    filter: saturate(0.8);
-    mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
-    -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
-  }
-  .hero__slot--mid {
-    left: -3%;
-    bottom: 1%;
-    width: 158px;
-    transform: rotate(-7deg);
-    z-index: 1;
-  }
-  .hero__slot--front {
-    right: 10%;
-    top: 7%;
-    width: 214px;
-    transform: rotate(2.4deg);
-    z-index: 3;
-  }
-  .hero__tag {
-    position: absolute;
-    z-index: 4;
-    font-family: var(--font-mono);
-    font-size: 0.64rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-2);
-    background: color-mix(in srgb, var(--bg) 92%, transparent);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0.32rem 0.62rem;
-    white-space: nowrap;
-  }
-  .hero__tag--a {
-    right: 2%;
-    bottom: 2%;
-  }
-  .hero__tag--b {
-    left: -2%;
-    bottom: -1%;
-  }
-  .hero__tag--c {
-    left: 4%;
-    top: 3%;
-  }
-
-  /* ------------------------------------------------------ featured app */
-  .feature {
-    position: relative;
-    padding-block: clamp(3.5rem, 8vw, 6rem);
+    padding-block: clamp(3rem, 7vw, 5.5rem);
     border-block: 1px solid var(--line);
-    background:
-      radial-gradient(
-        90% 120% at 85% 10%,
-        color-mix(in srgb, var(--accent, var(--brand)) 12%, transparent) 0%,
-        transparent 55%
-      ),
-      var(--bg-2);
+    background: var(--bg-2);
     overflow: hidden;
-    transition: background 0.6s var(--ease);
   }
-  .feature__inner {
+  .showcase__head {
     display: flex;
-    flex-direction: column;
-    gap: clamp(1.5rem, 3vw, 2.2rem);
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
   }
-  .feature__rail {
-    position: relative;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+  .showcase__head h2 {
+    margin-top: 0.9rem;
+    max-width: 16ch;
+  }
+  .showcase__nav {
+    display: flex;
     align-items: center;
-    gap: clamp(0.5rem, 1.5vw, 1.4rem);
+    gap: 0.5rem;
+    flex: none;
   }
-  .feature__slides {
+  .showcase__counter {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    color: var(--text-3);
+    margin-right: 0.4rem;
+  }
+  .showcase__arrow {
     display: grid;
-    min-width: 0;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-2);
+    color: var(--text-2);
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+    backdrop-filter: blur(6px);
+    transition:
+      color var(--dur-1) var(--ease),
+      border-color var(--dur-1) var(--ease),
+      background-color var(--dur-1) var(--ease),
+      transform var(--dur-1) var(--ease);
   }
-  .feature__slide {
+  .showcase__arrow:hover {
+    color: var(--text);
+    border-color: var(--line-3);
+    background: var(--surface-2);
+  }
+  .showcase__arrow:active {
+    transform: scale(0.93);
+  }
+
+  .showcase__stage {
+    display: grid;
+  }
+  .showcase__slide {
     grid-area: 1 / 1;
     display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-    gap: clamp(1.6rem, 4vw, 3.5rem);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
     align-items: center;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(14px);
+    transform: translateY(16px);
     transition:
-      opacity 0.5s var(--ease),
-      transform 0.6s var(--ease-out),
-      visibility 0.5s;
+      opacity var(--dur-3) var(--ease),
+      transform var(--dur-4) var(--ease-out),
+      visibility var(--dur-3);
   }
-  .feature__slide.is-active {
+  .showcase__slide.is-active {
     opacity: 1;
     visibility: visible;
     transform: none;
   }
-  .feature__nav {
-    display: grid;
-    place-items: center;
-    width: 2.8rem;
-    height: 2.8rem;
-    border-radius: 999px;
-    border: 1px solid var(--line-2);
-    color: var(--text-2);
-    background: color-mix(in srgb, var(--surface) 70%, transparent);
-    backdrop-filter: blur(6px);
-    transition:
-      color 0.2s var(--ease),
-      border-color 0.2s var(--ease),
-      background-color 0.2s var(--ease),
-      transform 0.2s var(--ease);
-  }
-  .feature__nav:hover {
-    color: var(--text);
-    border-color: var(--text-3);
-    background: var(--surface-2);
-  }
-  .feature__nav:active {
-    transform: scale(0.94);
-  }
-  .feature__title {
-    margin-top: 0.9rem;
-    max-width: 20ch;
-  }
-  .feature__name {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.8rem;
-  }
-  .feature__flag {
+  .showcase__label {
     display: flex;
-    align-items: baseline;
-    gap: 0.9rem;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.19em;
     text-transform: uppercase;
     color: var(--accent);
   }
-  .feature__flag-label {
-    color: var(--accent);
+  .showcase__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
   }
-  .feature__flag-index {
+  .showcase__platform {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
     color: var(--text-3);
     letter-spacing: 0.14em;
   }
-  .feature__copy .lede {
-    margin-top: 1.1rem;
+  .showcase__name {
+    margin-top: 0.9rem;
+    font-size: clamp(1.7rem, 3vw, 2.5rem);
+    letter-spacing: -0.032em;
   }
-  .feature__list {
+  .showcase__tagline {
+    margin-top: 0.4rem;
+    font-size: 1.05rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .showcase__body {
+    margin-top: 1rem;
+    color: var(--text-2);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    max-width: 52ch;
+  }
+  .showcase__points {
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
-    margin-top: 1.6rem;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
   }
-  .feature__list li {
+  .showcase__points li {
     display: flex;
     align-items: flex-start;
-    gap: 0.6rem;
-    font-size: 0.95rem;
+    gap: 0.55rem;
+    font-size: 0.9rem;
     color: var(--text-2);
   }
-  .feature__list svg {
+  .showcase__points svg {
     flex: none;
-    margin-top: 0.32em;
+    margin-top: 0.3em;
     color: var(--accent);
   }
-  .feature__actions {
+  .showcase__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
-    margin-top: 2rem;
+    margin-top: 1.8rem;
   }
-  .feature__stats {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem 1.5rem;
-    margin-top: 2.2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--line);
-  }
-  .feature__stats dt {
-    font-size: 0.64rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--text-3);
-  }
-  .feature__stats dd {
-    margin: 0.25rem 0 0;
-    font-size: 0.9rem;
-    font-weight: 520;
-  }
-
-  .feature__stage {
+  .showcase__art {
     position: relative;
     display: flex;
     justify-content: center;
   }
-  .feature__art {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-  .feature__phone-slot {
-    width: 268px;
+  .showcase__phone {
+    width: 250px;
     transform: rotate(2deg);
   }
-  .feature__window-slot {
+  .showcase__window {
     width: 100%;
-    transform: rotate(-1deg);
-  }
-  .feature__mini {
-    position: absolute;
-    left: 0;
-    bottom: -2.5rem;
-    width: 8.5rem;
-    margin: 0;
-    border-radius: 12px;
+    border-radius: 9px;
     overflow: hidden;
     border: 1px solid var(--line-2);
     background: var(--surface);
-    box-shadow: var(--shadow-lg);
-    transform: rotate(-4deg);
+    box-shadow: var(--shadow-3);
+    transform: rotate(-1deg);
   }
-  .feature__mini img {
+  .showcase__windowbar {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.4rem 0.6rem;
+    background: linear-gradient(var(--surface-3), var(--surface-2));
+    border-bottom: 1px solid var(--line);
+  }
+  .showcase__windowbar i {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--line-2);
+  }
+  .showcase__windowbar i:first-child {
+    background: color-mix(in srgb, #ff5f57 60%, transparent);
+  }
+  .showcase__windowbar i:nth-child(2) {
+    background: color-mix(in srgb, #febc2e 60%, transparent);
+  }
+  .showcase__windowbar i:nth-child(3) {
+    background: color-mix(in srgb, #28c840 60%, transparent);
+  }
+  .showcase__windowbar span {
+    margin-left: 0.3rem;
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .showcase__window img {
     width: 100%;
     height: auto;
     display: block;
   }
-  .feature__mini figcaption {
-    padding: 0.5rem 0.6rem;
-    font-size: 0.66rem;
-    line-height: 1.35;
-    color: var(--text-3);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
+  .showcase__mini {
+    position: absolute;
+    left: -1.5rem;
+    bottom: -1.5rem;
+    width: 7.5rem;
+    margin: 0;
+    border-radius: 11px;
     overflow: hidden;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    box-shadow: var(--shadow-3);
+    transform: rotate(-4deg);
+  }
+  .showcase__mini img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
-  .feature__tabs {
+  .showcase__tabs {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.5rem;
-    padding-top: clamp(1rem, 2vw, 1.6rem);
+    margin-top: clamp(1.5rem, 3vw, 2.4rem);
+    padding-top: clamp(1rem, 2vw, 1.5rem);
     border-top: 1px solid var(--line);
   }
-  .feature__tab {
+  .showcase__tab {
     display: flex;
     align-items: center;
     gap: 0.7rem;
@@ -776,48 +629,48 @@ const galleryStrip = [
     border-radius: var(--radius-sm);
     border: 1px solid transparent;
     text-align: left;
+    opacity: 0.5;
     transition:
-      border-color 0.25s var(--ease),
-      background-color 0.25s var(--ease),
-      opacity 0.25s var(--ease);
-    opacity: 0.55;
+      opacity var(--dur-2) var(--ease),
+      background-color var(--dur-2) var(--ease),
+      border-color var(--dur-2) var(--ease);
   }
-  .feature__tab:hover {
-    opacity: 0.9;
+  .showcase__tab:hover {
+    opacity: 0.85;
     background: var(--surface);
   }
-  .feature__tab.is-active {
+  .showcase__tab.is-active {
     opacity: 1;
     border-color: color-mix(in srgb, var(--accent) 45%, transparent);
     background: color-mix(in srgb, var(--accent) 9%, transparent);
   }
-  .feature__tab-icon {
+  .showcase__tab-icon {
     flex: none;
     width: 1.9rem;
     height: 1.9rem;
     display: grid;
     place-items: center;
   }
-  .feature__tab-icon img {
-    width: 1.75rem;
-    height: 1.75rem;
+  .showcase__tab-icon img {
+    width: 1.7rem;
+    height: 1.7rem;
     object-fit: contain;
   }
-  .feature__tab-text {
+  .showcase__tab-text {
     display: flex;
     flex-direction: column;
     min-width: 0;
   }
-  .feature__tab-name {
-    font-size: 0.88rem;
+  .showcase__tab-name {
+    font-size: 0.87rem;
     font-weight: 560;
     letter-spacing: -0.012em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .feature__tab-meta {
-    font-size: 0.62rem;
+  .showcase__tab-meta {
+    font-size: 0.6rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-3);
@@ -829,7 +682,7 @@ const galleryStrip = [
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
     gap: clamp(1rem, 4vw, 3rem);
     align-items: end;
-    margin-bottom: clamp(1.8rem, 4vw, 3rem);
+    margin-bottom: clamp(1.8rem, 4vw, 2.8rem);
   }
   .section__head h2 {
     margin-top: 0.9rem;
@@ -844,25 +697,25 @@ const galleryStrip = [
   /* --------------------------------------------------------- filter */
   .filter {
     display: inline-flex;
-    gap: 0.3rem;
-    padding: 0.28rem;
+    gap: 0.25rem;
+    padding: 0.25rem;
     border: 1px solid var(--line);
     border-radius: 999px;
     background: var(--surface);
-    margin-bottom: 1.6rem;
+    margin-bottom: 1.5rem;
   }
   .filter__btn {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.42rem 0.85rem;
+    padding: 0.4rem 0.85rem;
     border-radius: 999px;
     font-size: 0.85rem;
     font-weight: 540;
     color: var(--text-2);
     transition:
-      background-color 0.25s var(--ease),
-      color 0.25s var(--ease);
+      background-color var(--dur-2) var(--ease),
+      color var(--dur-2) var(--ease);
   }
   .filter__btn span {
     font-size: 0.68rem;
@@ -888,10 +741,79 @@ const galleryStrip = [
     display: none;
   }
 
+  /* ------------------------------------------------------------ band */
+  .band {
+    position: relative;
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+    border-block: 1px solid var(--line);
+    background:
+      radial-gradient(
+        70% 120% at 18% 40%,
+        color-mix(in srgb, #b98cff 14%, transparent) 0%,
+        transparent 62%
+      ),
+      var(--bg-2);
+    overflow: hidden;
+  }
+  .band__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+  }
+  .band__art {
+    display: flex;
+    justify-content: center;
+  }
+  .band__phones {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 28rem;
+  }
+  .band__phones > :global(div) {
+    width: 54%;
+  }
+  .band__phones > :global(div):first-child {
+    transform: rotate(-3deg);
+    margin-right: -13%;
+    z-index: 2;
+  }
+  .band__phones > :global(div):last-child {
+    transform: rotate(3.5deg);
+  }
+  .band__copy h2 {
+    margin-top: 0.9rem;
+    max-width: 16ch;
+  }
+  .band__copy .lede {
+    margin-top: 1.1rem;
+  }
+  .band__points {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
+  }
+  .band__points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    font-size: 0.92rem;
+    color: var(--text-2);
+  }
+  .band__points svg {
+    flex: none;
+    margin-top: 0.3em;
+    color: #b98cff;
+  }
+  .band__copy .btn {
+    margin-top: 1.7rem;
+  }
+
   /* ---------------------------------------------------------- strip */
   .section--strip {
     border-top: 1px solid var(--line);
-    background: var(--bg-2);
   }
   .strip {
     display: grid;
@@ -906,14 +828,14 @@ const galleryStrip = [
     background: var(--surface);
     overflow: hidden;
     transition:
-      transform 0.4s var(--ease-out),
-      border-color 0.3s var(--ease),
-      box-shadow 0.4s var(--ease-out);
+      transform var(--dur-3) var(--ease-out),
+      border-color var(--dur-2) var(--ease),
+      box-shadow var(--dur-3) var(--ease-out);
   }
   .strip__card:hover {
     transform: translateY(-5px);
     border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-2);
   }
   .strip__frame {
     display: block;
@@ -926,7 +848,7 @@ const galleryStrip = [
     height: 100%;
     object-fit: cover;
     object-position: top center;
-    transition: transform 0.6s var(--ease-out);
+    transition: transform var(--dur-4) var(--ease-out);
   }
   .strip__card:hover .strip__frame img {
     transform: scale(1.04);
@@ -938,7 +860,7 @@ const galleryStrip = [
   .strip__name {
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--accent);
@@ -946,7 +868,7 @@ const galleryStrip = [
   .strip__caption {
     display: block;
     margin-top: 0.35rem;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     color: var(--text-2);
     line-height: 1.45;
   }
@@ -965,8 +887,8 @@ const galleryStrip = [
     opacity: 0;
     transform: translateY(4px);
     transition:
-      opacity 0.3s var(--ease),
-      transform 0.3s var(--ease-out);
+      opacity var(--dur-2) var(--ease),
+      transform var(--dur-2) var(--ease-out);
     backdrop-filter: blur(6px);
   }
   .strip__card:hover .strip__arrow,
@@ -993,12 +915,6 @@ const galleryStrip = [
     line-height: 1.68;
     margin-bottom: 1.1rem;
   }
-  .about__actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1.6rem;
-  }
   .about__method {
     display: flex;
     gap: 0.75rem;
@@ -1016,6 +932,12 @@ const galleryStrip = [
     text-transform: uppercase;
     color: var(--text-3);
     padding-top: 0.22rem;
+  }
+  .about__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.6rem;
   }
   .about__handle {
     font-size: 0.8rem;
@@ -1035,9 +957,9 @@ const galleryStrip = [
     border-radius: var(--radius-sm);
     background: var(--surface);
     transition:
-      border-color 0.25s var(--ease),
-      transform 0.3s var(--ease-out),
-      background-color 0.25s var(--ease);
+      border-color var(--dur-2) var(--ease),
+      transform var(--dur-2) var(--ease-out),
+      background-color var(--dur-2) var(--ease);
   }
   .about__repos a:hover {
     border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
@@ -1090,16 +1012,16 @@ const galleryStrip = [
     height: 2.6rem;
     border-radius: 999px;
     border: 1px solid var(--line-2);
-    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    background: color-mix(in srgb, var(--surface) 86%, transparent);
     color: var(--text-2);
     backdrop-filter: blur(8px);
     opacity: 0;
     transform: translateY(12px) scale(0.9);
     pointer-events: none;
     transition:
-      opacity 0.3s var(--ease),
-      transform 0.3s var(--ease-out),
-      color 0.2s var(--ease);
+      opacity var(--dur-2) var(--ease),
+      transform var(--dur-2) var(--ease-out),
+      color var(--dur-1) var(--ease);
   }
   .to-top.is-visible {
     opacity: 1;
@@ -1126,21 +1048,24 @@ const galleryStrip = [
     }
   }
   @media (max-width: 980px) {
-    .hero__inner {
+    .showcase__slide,
+    .band__inner {
       grid-template-columns: minmax(0, 1fr);
     }
-    .feature__slide {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .feature__rail {
-      grid-template-columns: auto minmax(0, 1fr) auto;
-    }
-    .hero__stage {
-      min-height: 28rem;
-      max-width: 30rem;
-    }
-    .feature__stage {
+    .showcase__art {
       order: -1;
+    }
+    .showcase__mini {
+      left: auto;
+      right: 0;
+      bottom: -1rem;
+      width: 6.5rem;
+    }
+    .band__art {
+      order: -1;
+    }
+    .band__phones {
+      max-width: 22rem;
     }
     .project-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1149,58 +1074,53 @@ const galleryStrip = [
       grid-template-columns: minmax(0, 1fr);
       align-items: start;
     }
-    .feature__tabs {
+    .showcase__tabs {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
   @media (max-width: 700px) {
-    .hero__facts {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .hero__stage {
-      min-height: 23rem;
-      max-width: 24rem;
-    }
-    .hero__slot--back {
-      display: none;
-    }
-    .hero__slot--mid {
-      left: -2%;
-      bottom: 0;
-      width: 116px;
-    }
-    .hero__slot--front {
-      right: 4%;
-      top: 4%;
-      width: 172px;
-    }
-    .hero__tag--b {
-      display: none;
-    }
-    .hero__tag--c {
-      right: 0;
-      bottom: 22%;
-    }
-    .project-grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
     .strip {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .about {
       grid-template-columns: minmax(0, 1fr);
     }
-    .feature__stats {
+    .project-grid {
       grid-template-columns: minmax(0, 1fr);
     }
-    .feature__mini {
-      display: none;
+    .showcase__tabs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.4rem;
+    }
+    .showcase__tab {
+      padding: 0.5rem 0.6rem;
+      gap: 0.5rem;
+    }
+    .showcase__tab-icon {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
+    .showcase__tab-icon img {
+      width: 1.45rem;
+      height: 1.45rem;
+    }
+    .showcase__head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .showcase__nav {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .showcase__counter {
+      margin-right: auto;
     }
   }
 </style>
 
 <script>
-  // Reveal on scroll.
+  // Scroll-triggered reveals.
   const revealables = document.querySelectorAll<HTMLElement>('[data-reveal]');
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(
@@ -1211,11 +1131,81 @@ const galleryStrip = [
           observer.unobserve(entry.target);
         });
       },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+      { rootMargin: '0px 0px -6% 0px', threshold: 0.06 }
     );
     revealables.forEach((element) => observer.observe(element));
   } else {
     revealables.forEach((element) => element.setAttribute('data-reveal', 'in'));
+  }
+
+  // Project showcase carousel.
+  const carousel = document.querySelector<HTMLElement>('[data-carousel]');
+  if (carousel) {
+    const slides = Array.from(carousel.querySelectorAll<HTMLElement>('[data-carousel-slide]'));
+    const tabs = Array.from(carousel.querySelectorAll<HTMLButtonElement>('[data-carousel-tab]'));
+    const counter = carousel.querySelector<HTMLElement>('[data-carousel-counter]');
+    let index = 0;
+
+    const show = (next: number) => {
+      index = (next + slides.length) % slides.length;
+      slides.forEach((slide, i) => {
+        const active = i === index;
+        slide.classList.toggle('is-active', active);
+        slide.setAttribute('aria-hidden', String(!active));
+      });
+      tabs.forEach((tab, i) => {
+        const active = i === index;
+        tab.classList.toggle('is-active', active);
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+      if (counter) {
+        counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+      }
+      const accent = slides[index]?.dataset.accent;
+      if (accent) carousel.style.setProperty('--accent', accent);
+    };
+
+    slides.forEach((slide) => {
+      const accent = slide.getAttribute('style')?.match(/--accent:\s*([^;]+)/)?.[1];
+      if (accent) slide.dataset.accent = accent.trim();
+    });
+    const initial = slides[0]?.dataset.accent;
+    if (initial) carousel.style.setProperty('--accent', initial);
+
+    carousel.querySelector('[data-carousel-prev]')?.addEventListener('click', () => show(index - 1));
+    carousel.querySelector('[data-carousel-next]')?.addEventListener('click', () => show(index + 1));
+    tabs.forEach((tab, i) => tab.addEventListener('click', () => show(i)));
+
+    carousel.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        show(index + 1);
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        show(index - 1);
+      }
+    });
+
+    let startX: number | null = null;
+    carousel.addEventListener(
+      'touchstart',
+      (event) => {
+        startX = event.changedTouches[0]?.clientX ?? null;
+      },
+      { passive: true }
+    );
+    carousel.addEventListener(
+      'touchend',
+      (event) => {
+        if (startX === null) return;
+        const delta = (event.changedTouches[0]?.clientX ?? startX) - startX;
+        if (Math.abs(delta) > 56) show(index + (delta < 0 ? 1 : -1));
+        startX = null;
+      },
+      { passive: true }
+    );
   }
 
   // Platform filter.
@@ -1240,89 +1230,12 @@ const galleryStrip = [
     });
   }
 
-  // Project showcase carousel.
-  const carousel = document.querySelector<HTMLElement>('[data-carousel]');
-  if (carousel) {
-    const slides = Array.from(
-      carousel.querySelectorAll<HTMLElement>('[data-carousel-slide]')
-    );
-    const tabs = Array.from(carousel.querySelectorAll<HTMLButtonElement>('[data-carousel-tab]'));
-    const section = carousel;
-    let index = 0;
-
-    const show = (next: number, focusTab = false) => {
-      index = (next + slides.length) % slides.length;
-      slides.forEach((slide, i) => {
-        const active = i === index;
-        slide.classList.toggle('is-active', active);
-        slide.setAttribute('aria-hidden', String(!active));
-      });
-      tabs.forEach((tab, i) => {
-        const active = i === index;
-        tab.classList.toggle('is-active', active);
-        tab.setAttribute('aria-selected', String(active));
-        tab.tabIndex = active ? 0 : -1;
-      });
-      const project = slides[index]?.dataset.accent;
-      if (project) section.style.setProperty('--accent', project);
-      if (focusTab) tabs[index]?.focus();
-    };
-
-    slides.forEach((slide) => {
-      const accent = slide.getAttribute('style')?.match(/--accent:\s*([^;]+)/)?.[1];
-      if (accent) slide.dataset.accent = accent.trim();
-    });
-    const initial = slides[0]?.dataset.accent;
-    if (initial) section.style.setProperty('--accent', initial);
-
-    carousel
-      .querySelector('[data-carousel-prev]')
-      ?.addEventListener('click', () => show(index - 1));
-    carousel
-      .querySelector('[data-carousel-next]')
-      ?.addEventListener('click', () => show(index + 1));
-    tabs.forEach((tab, i) => tab.addEventListener('click', () => show(i)));
-
-    carousel.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        show(index + 1);
-      }
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        show(index - 1);
-      }
-    });
-
-    // Swipe between projects on touch devices.
-    let startX: number | null = null;
-    carousel.addEventListener(
-      'touchstart',
-      (event) => {
-        startX = event.changedTouches[0]?.clientX ?? null;
-      },
-      { passive: true }
-    );
-    carousel.addEventListener(
-      'touchend',
-      (event) => {
-        if (startX === null) return;
-        const delta = (event.changedTouches[0]?.clientX ?? startX) - startX;
-        if (Math.abs(delta) > 56) show(index + (delta < 0 ? 1 : -1));
-        startX = null;
-      },
-      { passive: true }
-    );
-  }
-
   // Back to top.
   const toTop = document.querySelector<HTMLButtonElement>('[data-to-top]');
   if (toTop) {
     const onScroll = () => toTop.classList.toggle('is-visible', window.scrollY > 900);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    toTop.addEventListener('click', () =>
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    );
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   }
 </script>

@@ -6,6 +6,8 @@ export interface Props {
   class?: string;
   loading?: 'lazy' | 'eager';
   width?: string;
+  /** Renders the window chrome bar. */
+  chrome?: boolean;
 }
 
 const {
@@ -15,17 +17,27 @@ const {
   class: className = '',
   loading = 'lazy',
   width,
+  chrome = true,
 } = Astro.props;
 ---
 
-<div class={`window ${className}`} style={width ? `max-width:${width}` : undefined}>
-  <div class="window__bar">
-    <span class="window__dots" aria-hidden="true">
-      <i></i><i></i><i></i>
-    </span>
-    <span class="window__title mono">{title}</span>
-    <span class="window__spacer" aria-hidden="true"></span>
-  </div>
+<div
+  class={`window ${className}`}
+  style={width ? `max-width:${width}` : undefined}
+>
+  {
+    chrome && (
+      <div class="window__bar">
+        <span class="window__dots" aria-hidden="true">
+          <i></i>
+          <i></i>
+          <i></i>
+        </span>
+        <span class="window__title mono">{title}</span>
+        <span class="window__spacer" aria-hidden="true"></span>
+      </div>
+    )
+  }
   <div class="window__body">
     <img src={src} alt={alt} loading={loading} decoding="async" width="1800" height="976" />
   </div>
@@ -33,37 +45,54 @@ const {
 
 <style>
   .window {
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--line-2);
     background: var(--surface);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-3);
+    position: relative;
   }
   .window__bar {
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    padding: 0.55rem 0.8rem;
-    background: var(--surface-2);
+    padding: 0.5rem 0.75rem;
+    background: linear-gradient(var(--surface-3), var(--surface-2));
     border-bottom: 1px solid var(--line);
   }
   .window__dots {
     display: inline-flex;
-    gap: 0.38rem;
+    gap: 0.36rem;
+    flex: none;
   }
   .window__dots i {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: 999px;
     background: var(--line-2);
   }
+  .window__dots i:first-child {
+    background: color-mix(in srgb, #ff5f57 60%, transparent);
+  }
+  .window__dots i:nth-child(2) {
+    background: color-mix(in srgb, #febc2e 60%, transparent);
+  }
+  .window__dots i:last-child {
+    background: color-mix(in srgb, #28c840 60%, transparent);
+  }
   .window__title {
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
+    font-size: 0.65rem;
+    letter-spacing: 0.09em;
     color: var(--text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .window__spacer {
     flex: 1;
+  }
+  .window__body {
+    background: #05070b;
   }
   .window__body img {
     width: 100%;

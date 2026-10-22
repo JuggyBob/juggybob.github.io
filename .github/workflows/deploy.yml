@@ -10,7 +10,7 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, and never cancel a running one.
+# Only one deployment may run at a time, and a running one is never cancelled.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -19,6 +19,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -32,8 +33,39 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # `astro check` runs the TypeScript diagnostics and `astro build` produces
+      # the static site. Astro's configured output directory is `dist/`.
       - name: Type-check and build
         run: npm run build
+
+      # Fail loudly if the build did not produce a publishable site, rather
+      # than uploading a half-finished artifact.
+      - name: Verify the generated site
+        run: |
+          set -euo pipefail
+          OUT="dist"
+          if [ ! -d "$OUT" ]; then
+            echo "::error::Expected the Astro output directory '$OUT' to exist, but it does not."
+            exit 1
+          fi
+          for entry in index.html apps/ironpulse/index.html apps/calcsuite/index.html \
+                       apps/discount-hunter/index.html apps/codescope/index.html 404.html; do
+            if [ ! -f "$OUT/$entry" ]; then
+              echo "::error::Missing expected page '$OUT/$entry' in the build output."
+              exit 1
+            fi
+          done
+          if ! ls "$OUT"/*.woff2 >/dev/null 2>&1; then
+            echo "::error::The self-hosted fonts are missing from '$OUT'."
+            exit 1
+          fi
+          if ! ls "$OUT"/img/*/icon.png >/dev/null 2>&1; then
+            echo "::error::The application icons are missing from '$OUT'."
+            exit 1
+          fi
+          echo "Build output verified:"
+          find "$OUT" -maxdepth 2 -type f | head -20
+          du -sh "$OUT"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -47,6 +79,7 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -1,0 +1,435 @@
+---
+import Icon from './Icon.astro';
+import PhoneFrame from './PhoneFrame.astro';
+import PreviewCard from './PreviewCard.astro';
+import { bySlug } from '../data/projects';
+
+const ironpulse = bySlug('ironpulse');
+const hunter = bySlug('discount-hunter');
+---
+
+<section class="hero">
+  <div class="hero__rule" aria-hidden="true"></div>
+
+  <div class="wrap wrap-wide hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow" data-reveal="rise">Independent software</p>
+
+      <h1 class="hero__title" data-reveal="rise" style="--reveal-delay:60ms">
+        Four apps.<br /><span class="grad">Each one finished.</span>
+      </h1>
+
+      <p class="lede hero__lede" data-reveal="rise" style="--reveal-delay:120ms">
+        A workout logger, a mathematics toolkit, a game-deal finder and a Windows code
+        analyser. Every one of them runs offline, asks for no account, and carries no
+        trackers.
+      </p>
+
+      <div class="hero__actions" data-reveal="rise" style="--reveal-delay:170ms">
+        <a class="btn" href="#apps">
+          <span>Explore the apps</span>
+          <Icon name="arrow-right" size={15} />
+        </a>
+        <a class="btn btn--ghost" href={`/apps/${ironpulse.slug}/`}>
+          <span>See IronPulse</span>
+        </a>
+      </div>
+
+      <dl class="hero__facts" data-reveal="rise" style="--reveal-delay:230ms">
+        <div>
+          <dt class="mono">Projects</dt>
+          <dd>4</dd>
+        </div>
+        <div>
+          <dt class="mono">Platforms</dt>
+          <dd>Android · Windows</dd>
+        </div>
+        <div>
+          <dt class="mono">Accounts</dt>
+          <dd>None</dd>
+        </div>
+        <div>
+          <dt class="mono">Trackers</dt>
+          <dd>None</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="hero__scene" data-reveal="depth" style="--reveal-delay:100ms" data-scene>
+      <div class="hero__phones">
+        <div class="hero__item hero__item--ip" data-parallax="0.06">
+          <PhoneFrame
+            src="/img/ironpulse/dashboard.webp"
+            alt="The IronPulse home dashboard: today's workout, the weekly plan and the last seven days."
+            loading="eager"
+            sizes="(max-width: 980px) 46vw, 250px"
+          />
+        </div>
+        <div class="hero__item hero__item--cs" data-parallax="0.1">
+          <PhoneFrame
+            src="/img/calcsuite/scientific.webp"
+            alt="The Calculator Suite scientific calculator evaluating sin(30) plus 2 to the power 10."
+            loading="eager"
+            sizes="(max-width: 980px) 40vw, 215px"
+          />
+        </div>
+      </div>
+
+      <div class="hero__item hero__item--dh" data-parallax="0.14">
+        <PreviewCard project={hunter} focus="50% 23%" />
+      </div>
+
+      <a
+        class="hero__scope"
+        href="/apps/codescope/"
+        data-parallax="0.08"
+        aria-label="CodeScope — a native Windows code analysis tool"
+      >
+        <span class="hero__scope-bar" aria-hidden="true">
+          <i></i><i></i><i></i>
+          <span class="mono">CodeScope — in-app report</span>
+        </span>
+        <span class="hero__scope-body">
+          <img
+            src="/img/codescope/report.webp"
+            alt="The CodeScope report dashboard showing overview metrics and the language breakdown."
+            loading="eager"
+            decoding="async"
+            width="1800"
+            height="976"
+          />
+        </span>
+        <span class="hero__scope-foot">
+          <span class="chip chip--accent" style="--accent:#3ad9e6">Windows</span>
+          <span class="hero__scope-name">CodeScope</span>
+          <span class="hero__scope-note">Frozen scc engine, no network calls</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 7vw, 5.5rem);
+    overflow: hidden;
+  }
+  .hero__rule {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, var(--line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: 68px 68px;
+    mask-image: radial-gradient(78% 62% at 62% 34%, #000 0%, transparent 76%);
+    -webkit-mask-image: radial-gradient(78% 62% at 62% 34%, #000 0%, transparent 76%);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .hero__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+  }
+
+  .hero__title {
+    margin-top: 1.15rem;
+  }
+  .hero__lede {
+    margin-top: 1.35rem;
+    max-width: 50ch;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 1.9rem;
+  }
+  .hero__facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, auto));
+    gap: clamp(0.9rem, 2.6vw, 2.2rem);
+    margin-top: 2.4rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line);
+  }
+  .hero__facts dt {
+    font-size: 0.63rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .hero__facts dd {
+    margin: 0.3rem 0 0;
+    font-size: 0.95rem;
+    font-weight: 560;
+    letter-spacing: -0.015em;
+  }
+
+  /* ------------------------------------------------------------- scene */
+  .hero__scene {
+    position: relative;
+    width: 100%;
+    max-width: 34rem;
+    margin-inline: auto;
+    aspect-ratio: 1 / 1.06;
+  }
+  .hero__phones {
+    display: contents;
+  }
+  .hero__item {
+    position: absolute;
+    will-change: transform;
+  }
+  .hero__item--ip {
+    left: 0;
+    top: 1%;
+    width: 45%;
+    z-index: 3;
+    transform: rotate(-3.5deg);
+  }
+  .hero__item--cs {
+    right: 1%;
+    top: 15%;
+    width: 38%;
+    z-index: 2;
+    transform: rotate(4.5deg);
+  }
+  .hero__item--dh {
+    left: -1%;
+    bottom: 0;
+    width: 45%;
+    z-index: 4;
+    transform: rotate(-1.5deg);
+  }
+
+  /* CodeScope is a Windows application, so it is shown in a desktop window
+     rather than a phone. */
+  .hero__scope {
+    position: absolute;
+    right: 0;
+    bottom: 1%;
+    width: 50%;
+    z-index: 4;
+    display: block;
+    border-radius: 9px;
+    overflow: hidden;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    box-shadow: var(--shadow-3);
+    transform: rotate(1.5deg);
+    transition:
+      transform var(--dur-3) var(--ease-out),
+      border-color var(--dur-2) var(--ease);
+  }
+  .hero__scope:hover,
+  .hero__scope:focus-visible {
+    transform: rotate(0deg) translateY(-3px);
+    border-color: color-mix(in srgb, #3ad9e6 40%, var(--line-2));
+  }
+  .hero__scope-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.55rem;
+    background: linear-gradient(var(--surface-3), var(--surface-2));
+    border-bottom: 1px solid var(--line);
+  }
+  .hero__scope-bar i {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--line-2);
+  }
+  .hero__scope-bar i:first-child {
+    background: color-mix(in srgb, #ff5f57 60%, transparent);
+  }
+  .hero__scope-bar i:nth-child(2) {
+    background: color-mix(in srgb, #febc2e 60%, transparent);
+  }
+  .hero__scope-bar i:nth-child(3) {
+    background: color-mix(in srgb, #28c840 60%, transparent);
+  }
+  .hero__scope-bar span {
+    margin-left: 0.25rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hero__scope-body {
+    display: block;
+    background: #05070b;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+  .hero__scope-body img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+  .hero__scope-foot {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.6rem;
+    border-top: 1px solid var(--line);
+  }
+  .hero__scope-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .hero__scope-note {
+    font-size: 0.66rem;
+    color: var(--text-3);
+    margin-left: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* --------------------------------------------------------- responsive */
+  @media (max-width: 1080px) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+    }
+    .hero__item--ip {
+      width: 48%;
+    }
+    .hero__item--cs {
+      width: 41%;
+    }
+    .hero__item--dh {
+      width: 49%;
+    }
+    .hero__scope {
+      width: 53%;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+    }
+    .hero__copy {
+      max-width: 34rem;
+    }
+    .hero__scene {
+      max-width: 30rem;
+      aspect-ratio: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .hero__phones {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0;
+    }
+    .hero__item {
+      position: static;
+      transform: none;
+    }
+    .hero__item--ip {
+      width: 47%;
+      z-index: 3;
+      margin-right: -7%;
+      transform: rotate(-2.5deg);
+    }
+    .hero__item--cs {
+      width: 41%;
+      z-index: 2;
+      margin-top: 12%;
+      transform: rotate(3.5deg);
+    }
+    .hero__item--dh {
+      width: min(24rem, 100%);
+      margin-inline: auto;
+    }
+    .hero__scope {
+      position: static;
+      width: min(26rem, 100%);
+      margin-inline: auto;
+      transform: none;
+    }
+    .hero__scope:hover,
+    .hero__scope:focus-visible {
+      transform: translateY(-3px);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .hero__facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem 1.4rem;
+    }
+    .hero__phones {
+      gap: 0.35rem;
+    }
+    .hero__item--ip {
+      width: 50%;
+      margin-right: -4%;
+    }
+    .hero__item--cs {
+      width: 44%;
+      margin-top: 9%;
+    }
+    .hero__scope-note {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // A gentle pointer-driven drift for the hero composition on desktop only.
+  const scene = document.querySelector<HTMLElement>('[data-scene]');
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (scene && canHover.matches && !reduceMotion.matches) {
+    const layers = Array.from(scene.querySelectorAll<HTMLElement>('[data-parallax]'));
+    let raf = 0;
+    let tx = 0;
+    let ty = 0;
+
+    const apply = () => {
+      layers.forEach((layer) => {
+        const depth = Number(layer.dataset.parallax || '0.06');
+        layer.style.setProperty(
+          'transform',
+          `translate3d(${(-tx * depth * 26).toFixed(2)}px, ${(-ty * depth * 18).toFixed(2)}px, 0)`
+        );
+      });
+      raf = 0;
+    };
+
+    scene.addEventListener(
+      'pointermove',
+      (event) => {
+        const rect = scene.getBoundingClientRect();
+        tx = (event.clientX - rect.left) / rect.width - 0.5;
+        ty = (event.clientY - rect.top) / rect.height - 0.5;
+        if (!raf) raf = requestAnimationFrame(apply);
+      },
+      { passive: true }
+    );
+    scene.addEventListener(
+      'pointerleave',
+      () => {
+        tx = 0;
+        ty = 0;
+        if (!raf) raf = requestAnimationFrame(apply);
+      },
+      { passive: true }
+    );
+  }
+</script>

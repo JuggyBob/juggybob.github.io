@@ -1,4 +1,5 @@
 ---
+import Lightbox from './Lightbox.astro';
 import type { GalleryShot } from '../data/projects';
 
 export interface Props {
@@ -13,23 +14,25 @@ const { shots, id, accent } = Astro.props;
 <div class="gallery" data-gallery style={accent ? `--accent:${accent}` : undefined}>
   <ul class="gallery__grid">
     {
-      shots.map((shot, index) => (
+      shots.map((shot) => (
         <li class="gallery__item">
           <button
             class="gallery__button"
             type="button"
-            data-gallery-open
-            data-index={index}
+            data-lightbox-open
+            data-lightbox-caption={shot.caption}
             aria-label={`Open ${shot.caption}`}
           >
-            <img
-              src={shot.src}
-              alt={shot.alt}
-              loading="lazy"
-              decoding="async"
-              width="900"
-              height="2000"
-            />
+            <span class="gallery__frame">
+              <img
+                src={shot.src}
+                alt={shot.alt}
+                loading="lazy"
+                decoding="async"
+                width="900"
+                height="2000"
+              />
+            </span>
             <span class="gallery__caption">{shot.caption}</span>
           </button>
         </li>
@@ -37,41 +40,13 @@ const { shots, id, accent } = Astro.props;
     }
   </ul>
 
-  <dialog class="lightbox" id={`${id}-lightbox`} data-lightbox aria-label="Screenshot viewer">
-    <div class="lightbox__bar">
-      <span class="lightbox__count mono" data-lightbox-count></span>
-      <span class="lightbox__caption" data-lightbox-caption></span>
-      <button class="lightbox__close" type="button" data-lightbox-close aria-label="Close viewer">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-          <path d="M4 4l8 8M12 4l-8 8" />
-        </svg>
-      </button>
-    </div>
-    <div class="lightbox__stage">
-      <button class="lightbox__nav lightbox__nav--prev" type="button" data-lightbox-prev aria-label="Previous screenshot">
-        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M10 3.5 5.5 8l4.5 4.5" />
-        </svg>
-      </button>
-      <img
-        class="lightbox__image"
-        data-lightbox-image
-        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-        alt=""
-      />
-      <button class="lightbox__nav lightbox__nav--next" type="button" data-lightbox-next aria-label="Next screenshot">
-        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M6 3.5 10.5 8 6 12.5" />
-        </svg>
-      </button>
-    </div>
-  </dialog>
+  <Lightbox shots={shots} id={`${id}-lightbox`} accent={accent} />
 </div>
 
 <style>
   .gallery__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
     gap: clamp(0.7rem, 1.4vw, 1.1rem);
   }
   .gallery__button {
@@ -83,24 +58,31 @@ const { shots, id, accent } = Astro.props;
     border: 1px solid var(--line);
     background: var(--surface);
     transition:
-      transform 0.35s var(--ease-out),
-      border-color 0.25s var(--ease),
-      box-shadow 0.35s var(--ease-out);
+      transform var(--dur-3) var(--ease-out),
+      border-color var(--dur-2) var(--ease),
+      box-shadow var(--dur-3) var(--ease-out);
   }
   .gallery__button:hover,
   .gallery__button:focus-visible {
     transform: translateY(-4px);
     border-color: var(--line-2);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-2);
   }
-  .gallery__button img {
-    width: 100%;
-    height: auto;
+  .gallery__frame {
     display: block;
-    aspect-ratio: 9 / 20;
+    overflow: hidden;
+    background: var(--surface-2);
+    aspect-ratio: 9 / 19;
+  }
+  .gallery__frame img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     object-position: top center;
-    background: var(--surface-2);
+    transition: transform var(--dur-4) var(--ease-out);
+  }
+  .gallery__button:hover .gallery__frame img {
+    transform: scale(1.045);
   }
   .gallery__caption {
     display: block;
@@ -110,182 +92,14 @@ const { shots, id, accent } = Astro.props;
     color: var(--text-2);
   }
 
-  .lightbox {
-    border: 0;
-    padding: 0;
-    width: min(1080px, 94vw);
-    max-width: none;
-    max-height: 92vh;
-    background: var(--bg-2);
-    color: var(--text);
-    border: 1px solid var(--line-2);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-  }
-  .lightbox::backdrop {
-    background: rgba(4, 5, 7, 0.82);
-    backdrop-filter: blur(4px);
-  }
-  .lightbox__bar {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.7rem 0.9rem;
-    border-bottom: 1px solid var(--line);
-    background: var(--surface);
-  }
-  .lightbox__count {
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    color: var(--text-3);
-    flex: none;
-  }
-  .lightbox__caption {
-    font-size: 0.85rem;
-    color: var(--text-2);
-    flex: 1;
-    min-width: 0;
-  }
-  .lightbox__close {
-    display: grid;
-    place-items: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    color: var(--text-2);
-    flex: none;
-  }
-  .lightbox__close:hover {
-    color: var(--text);
-    border-color: var(--line-2);
-  }
-  .lightbox__stage {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.9rem;
-    background: var(--bg-2);
-  }
-  .lightbox__image {
-    width: 100%;
-    max-height: 76vh;
-    object-fit: contain;
-    border-radius: 8px;
-    justify-self: center;
-  }
-  .lightbox__nav {
-    display: grid;
-    place-items: center;
-    width: 2.4rem;
-    height: 2.4rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    color: var(--text-2);
-    background: var(--surface);
-    transition:
-      color 0.2s var(--ease),
-      border-color 0.2s var(--ease);
-  }
-  .lightbox__nav:hover {
-    color: var(--text);
-    border-color: var(--line-2);
-  }
-
-  @media (max-width: 640px) {
-    .lightbox__stage {
-      grid-template-columns: 1fr;
+  @media (max-width: 520px) {
+    .gallery__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.6rem;
     }
-    .lightbox__nav {
-      justify-self: center;
-    }
-    .lightbox__image {
-      max-height: 60vh;
+    .gallery__caption {
+      padding: 0.55rem 0.6rem 0.65rem;
+      font-size: 0.72rem;
     }
   }
 </style>
-
-<script>
-  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
-    const dialog = gallery.querySelector<HTMLDialogElement>('[data-lightbox]');
-    const image = gallery.querySelector<HTMLImageElement>('[data-lightbox-image]');
-    const caption = gallery.querySelector<HTMLElement>('[data-lightbox-caption]');
-    const count = gallery.querySelector<HTMLElement>('[data-lightbox-count]');
-    if (!dialog || !image || !caption || !count) return;
-
-    const buttons = Array.from(
-      gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-open]')
-    );
-    const shots = buttons.map((button) => {
-      const img = button.querySelector('img');
-      return {
-        src: img?.currentSrc || img?.src || '',
-        alt: img?.alt || '',
-        caption: button.querySelector('.gallery__caption')?.textContent?.trim() || '',
-      };
-    });
-
-    let index = 0;
-
-    const render = () => {
-      const shot = shots[index];
-      if (!shot) return;
-      image.src = shot.src;
-      image.alt = shot.alt;
-      caption.textContent = shot.caption;
-      count.textContent = `${String(index + 1).padStart(2, '0')} / ${String(shots.length).padStart(2, '0')}`;
-    };
-
-    const open = (start: number) => {
-      index = start;
-      render();
-      if (typeof dialog.showModal === 'function') dialog.showModal();
-      else dialog.setAttribute('open', '');
-    };
-
-    const step = (delta: number) => {
-      index = (index + delta + shots.length) % shots.length;
-      render();
-    };
-
-    buttons.forEach((button, i) => button.addEventListener('click', () => open(i)));
-    gallery
-      .querySelector('[data-lightbox-prev]')
-      ?.addEventListener('click', () => step(-1));
-    gallery
-      .querySelector('[data-lightbox-next]')
-      ?.addEventListener('click', () => step(1));
-    gallery
-      .querySelector('[data-lightbox-close]')
-      ?.addEventListener('click', () => dialog.close());
-
-    dialog.addEventListener('click', (event) => {
-      if (event.target === dialog) dialog.close();
-    });
-
-    dialog.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        step(1);
-      }
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        step(-1);
-      }
-    });
-
-    // Touch swipe between shots.
-    let startX: number | null = null;
-    dialog.addEventListener('touchstart', (event) => {
-      startX = event.changedTouches[0]?.clientX ?? null;
-    });
-    dialog.addEventListener('touchend', (event) => {
-      if (startX === null) return;
-      const delta = (event.changedTouches[0]?.clientX ?? startX) - startX;
-      if (Math.abs(delta) > 48) step(delta < 0 ? 1 : -1);
-      startX = null;
-    });
-  });
-</script>
