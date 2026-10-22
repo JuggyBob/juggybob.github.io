@@ -23,17 +23,12 @@ const accent = project.accent;
 
 const meta = [
   { label: 'Platform', value: project.facts[0].value },
-  {
-    label: 'Release',
-    value: project.pending ? `v${project.version} · rolling out` : `v${project.version}`,
-  },
+  { label: 'Release', value: `v${project.version}` },
   { label: 'Licence', value: project.license },
   { label: 'Size', value: project.size },
 ];
 
-const downloadLabel = project.pending
-  ? 'Get the latest release'
-  : `Download v${project.version}`;
+const downloadLabel = `Download v${project.version}`;
 
 const rail = [
   { id: 'overview', label: 'Overview' },

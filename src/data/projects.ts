@@ -4,8 +4,11 @@
  * Every project fact used by the homepage, the product pages, the gallery and
  * the footer comes from this file, so a correction only ever has to be made
  * in one place. All of it is taken from the projects' own README files,
- * changelogs and the running applications.
+ * changelogs and the running applications. The version numbers are refreshed
+ * from the latest published GitHub release at build time.
  */
+
+import { latestReleases } from './latest-releases';
 
 export type Platform = 'Android' | 'Windows';
 
@@ -66,10 +69,9 @@ export interface Project {
   icon: string;
   repo: string;
   releases: string;
+  /** Fallback version used when the GitHub release lookup is unavailable. */
   version: string;
   released: string;
-  /** True while the named version is still rolling out to the releases page. */
-  pending?: boolean;
   license: string;
   licenseUrl: string;
   size: string;
@@ -124,7 +126,7 @@ export const projects: Project[] = [
     icon: '/img/ironpulse/icon.png',
     repo: 'https://github.com/JuggyBob/IronPulse',
     releases: 'https://github.com/JuggyBob/IronPulse/releases/latest',
-    version: '2.0.0',
+    version: '2.0.1',
     released: '21 October 2026',
     license: 'CC BY-NC-SA 4.0',
     licenseUrl: 'https://github.com/JuggyBob/IronPulse/blob/main/LICENSE',
@@ -151,7 +153,7 @@ export const projects: Project[] = [
     },
     facts: [
       { label: 'Platform', value: 'Android 7.1+ (API 24)' },
-      { label: 'Latest release', value: 'v2.0.0' },
+      { label: 'Latest release', value: 'v2.0.1' },
       { label: 'Package size', value: '≈ 20 MB' },
       { label: 'Licence', value: 'CC BY-NC-SA 4.0' },
       { label: 'Architecture', value: 'MVVM · Compose → ViewModel → Repository → Room' },
@@ -400,9 +402,8 @@ export const projects: Project[] = [
     icon: '/img/calcsuite/icon.png',
     repo: 'https://github.com/JuggyBob/CalculatorSuiteAndroid',
     releases: 'https://github.com/JuggyBob/CalculatorSuiteAndroid/releases/latest',
-    version: '3.1.0',
+    version: '3.0.3',
     released: 'October 2026',
-    pending: true,
     license: 'PolyForm Noncommercial 1.0.0',
     licenseUrl: 'https://github.com/JuggyBob/CalculatorSuiteAndroid/blob/main/LICENSE',
     size: '≈ 14 MB APK',
@@ -428,7 +429,7 @@ export const projects: Project[] = [
     },
     facts: [
       { label: 'Platform', value: 'Android 8.0+ (API 26)' },
-      { label: 'Latest release', value: 'v3.1.0' },
+      { label: 'Latest release', value: 'v3.0.3' },
       { label: 'Package size', value: '≈ 14 MB' },
       { label: 'Licence', value: 'PolyForm Noncommercial 1.0.0' },
       { label: 'Arithmetic', value: 'BigDecimal (34-digit context) and BigInteger' },
@@ -631,7 +632,7 @@ export const projects: Project[] = [
     icon: '/img/discounthunter/icon.png',
     repo: 'https://github.com/JuggyBob/DiscountHunterAndroid',
     releases: 'https://github.com/JuggyBob/DiscountHunterAndroid/releases/latest',
-    version: '1.1.0',
+    version: '1.1.1',
     released: '20 October 2026',
     license: 'Apache 2.0',
     licenseUrl: 'https://github.com/JuggyBob/DiscountHunterAndroid/blob/main/LICENSE',
@@ -658,7 +659,7 @@ export const projects: Project[] = [
     },
     facts: [
       { label: 'Platform', value: 'Android 7.0+ (API 24), portrait' },
-      { label: 'Latest release', value: 'v1.1.0' },
+      { label: 'Latest release', value: 'v1.1.1' },
       { label: 'Package size', value: '≈ 3 MB' },
       { label: 'Licence', value: 'Apache 2.0' },
       { label: 'Stores', value: 'Steam · GOG · Epic Games Store' },
@@ -1032,6 +1033,19 @@ export const projects: Project[] = [
     ],
   },
 ];
+
+// The latest published release wins over the fallback declared above. This is
+// best-effort: when GitHub cannot be reached the fallback is kept, so the site
+// still builds and never shows an empty version.
+for (const project of projects) {
+  const release = latestReleases[project.slug];
+  if (!release) continue;
+
+  project.version = release.version;
+  for (const fact of project.facts) {
+    if (fact.label === 'Latest release') fact.value = `v${release.version}`;
+  }
+}
 
 export const bySlug = (slug: string): Project => {
   const project = projects.find((item) => item.slug === slug);
